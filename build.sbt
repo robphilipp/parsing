@@ -43,7 +43,6 @@ lazy val app = (project in file(".")).
       "com.digitalcipher.spiked" % "spikes-descriptions_2.12" % "0.0.1-snapshot",
 
       // testing
-      //      "org.scalactic" %% "scalactic" % "3.0.1",
       "org.scalatest" %% "scalatest" % "3.0.5" % Test
     )
   )
