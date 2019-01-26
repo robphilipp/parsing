@@ -2,11 +2,9 @@ package com.digitalcipher.spiked.construction.parsing
 
 import com.digitalcipher.spiked.BaseSpec
 import com.digitalcipher.spiked.construction.description.LocationDescription.CARTESIAN
-import com.digitalcipher.spiked.construction.description._
-import com.digitalcipher.spiked.topology.coords.spatial.Points.Cartesian
-import squants.electro.{MagneticFlux, Millivolts, Webers}
-import squants.motion.{MetersPerSecond, Velocity}
-import squants.space.Millimeters
+import com.digitalcipher.spiked.construction.description.{NeuronDescription, _}
+import squants.electro.{Millivolts, Webers}
+import squants.motion.MetersPerSecond
 import squants.time.{Milliseconds, Seconds}
 
 class DnaParserTest extends BaseSpec {
@@ -113,7 +111,18 @@ class DnaParserTest extends BaseSpec {
         |)
       """.stripMargin
 
-    val result: Either[List[String], NetworkDescription] = (new DnaParser).parseDna(testData)
+    val parser = new DnaParser
+    val result: Either[List[String], NetworkDescription] = parser.parseDna(testData)
+
+    /*
+      (nid=in-1, grp=group1, nty=mi, mst=1 mV, inh=f, rfp=2 ms, rfb=0.1 µWb, mnp=0 mV, mpd=2500 ms, mpr=2 ms, mpn=0.0 mV, wnm=0, spp=1.1 mV, csp=0.1 m/s,
+        ipb=0 mV, ipl=0 mV, ipd=3600 s,
+        WDF=(fnc=zer),
+        SRP=(fcb=1000, fcm=0.1, fct=100 ms, dpb=1000, dpm=0.1, dpt=100 ms),
+        WLF=(fnc=bnd, lwb=0.0, upb=1.0),
+        LOC=(cst=ct, px1=-300 µm, px2=0µm, px3=100 µm)
+     */
+    val expectedNeuronDescriptions = neuronDescriptions()
 
     "parse without errors" in {
       // there should be no parsing errors
@@ -122,6 +131,17 @@ class DnaParserTest extends BaseSpec {
     }
 
     val description = result.right.get
+
+    "reparse the fragment into a matching description" in {
+      // create a dna fragment from the network description
+      val dna: String = NetworkDescription.fragment(description)
+
+      // parse the dna fragment, and grab the fragment from the newly created description.
+      // this newly create fragment should match the original fragment
+      parser.parseDna(dna)
+        .map(description => NetworkDescription.fragment(description))
+        .getOrElse("failed to reparse") should be(dna)
+    }
 
     "have the correct group description" in {
       val groups: Map[String, GroupDescription] = description.groups
@@ -145,48 +165,309 @@ class DnaParserTest extends BaseSpec {
       groups("group2").params.asInstanceOf[RemoteGroupParams].port should be(2552)
     }
 
+    val neurons: Map[String, NeuronDescription] = description.neurons
     "have the six described neurons" in {
-      val neurons: Map[String, NeuronDescription] = description.neurons
-
       // there should be 6 neurons
       neurons.size should be(6)
 
       // the neuron IDs should match the file
       neurons.keySet == Set("in-1", "in-2", "inh-1", "inh-2", "out-1", "out-2")
-
-      val input1 = NeuronDescription(
-        neuronId = "in-1",
-        groupId = "group1",
-        neuronSpecificParams = MonostableIntegratorParams(spikeThreshold = Millivolts(1)),
-        inhibitor = false,
-
-        refractoryPeriod = Milliseconds(2), baseRefractoriness = Webers(1e-7),
-
-        minMembranePotential = Millivolts(0),
-        membranePotentialDecayHalfLife = Milliseconds(2500), membranePotentialRiseHalfLife = Milliseconds(2),
-        membranePotentialNoise = Millivolts(0),
-
-        spikePotential = Millivolts(1.1),
-
-        conductanceSpeed = MetersPerSecond(0.1),
-
-        intrinsicPlasticityBase = Millivolts(0), intrinsicPlasticityLearningRate = Millivolts(0), intrinsicPlasticityDecayHalfLife = Seconds(3600),
-
-        weightNoiseMagnitude = 0,
-        weightDecayDescription = WeightDecayDescription(NoDecayParams()),
-        weightLimitDescription = WeightLimitDescription(BoundedParams(lowerBound = 0, upperBound = 1)),
-
-        synapseTimingDescription = SignalReleaseProbabilityDescription(
-          facilitator = SignalTimingFunction(base = 1000, magnitude = 0.1, timeConstant = Milliseconds(100)),
-          depletion = SignalTimingFunction(base = 1000, magnitude = 0.1, timeConstant = Milliseconds(100))
-        ),
-
-        locationDescription = new LocationDescription(point = ("-300 µm", "0 µm", "100 µm"), coordinateType = CARTESIAN.name)
-      )
-
-      neurons("in-1").neuronId should be (input1.neuronId)
-      neurons("in-1").locationDescription should be (input1.locationDescription)
-//      LocationDescription.fragment(neurons("in-1").locationDescription) should be (LocationDescription.fragment(input1.locationDescription))
     }
+
+    "have the parsed neuron descriptions matching the expected neuron descriptions" in {
+      // explicit checks because fragments (strings) don't always match in format
+      expectedNeuronDescriptions.foreach({ case (id, expected) =>
+        val actual = neurons(id)
+
+        // neuron characteristics
+        actual.neuronId should be(expected.neuronId)
+        actual.groupId should be(expected.groupId)
+        actual.neuronSpecificParams.getClass should be(expected.neuronSpecificParams.getClass)
+        actual.neuronSpecificParams.fragment should be(expected.neuronSpecificParams.fragment)
+        actual.inhibitor should be(expected.inhibitor)
+
+        // refractoriness
+        actual.refractoryPeriod should be(expected.refractoryPeriod)
+        actual.baseRefractoriness should be(expected.baseRefractoriness)
+
+        // membrane potential dynamics
+        actual.minMembranePotential should be(expected.minMembranePotential)
+        actual.membranePotentialDecayHalfLife should be(expected.membranePotentialDecayHalfLife)
+        actual.membranePotentialRiseHalfLife should be(expected.membranePotentialRiseHalfLife)
+        actual.membranePotentialNoise should be(expected.membranePotentialNoise)
+
+        // weights
+        actual.weightNoiseMagnitude should be(expected.weightNoiseMagnitude)
+        WeightDecayDescription.fragment(actual.weightDecayDescription) should be(WeightDecayDescription.fragment(expected.weightDecayDescription))
+        WeightLimitDescription.fragment(actual.weightLimitDescription) should be(WeightLimitDescription.fragment(expected.weightLimitDescription))
+
+        // spikes
+        actual.spikePotential should be(expected.spikePotential)
+        actual.conductanceSpeed should be(expected.conductanceSpeed)
+
+        // intrinsic plasticity
+        actual.intrinsicPlasticityBase should be(expected.intrinsicPlasticityBase)
+        actual.intrinsicPlasticityDecayHalfLife should be(expected.intrinsicPlasticityDecayHalfLife)
+        actual.intrinsicPlasticityLearningRate should be(expected.intrinsicPlasticityLearningRate)
+
+        // signal release probability
+        actual.synapseTimingDescription.depletion.base should be(expected.synapseTimingDescription.depletion.base)
+        actual.synapseTimingDescription.depletion.magnitude should be(expected.synapseTimingDescription.depletion.magnitude)
+        actual.synapseTimingDescription.depletion.timeConstant should be(expected.synapseTimingDescription.depletion.timeConstant)
+        actual.synapseTimingDescription.facilitator.base should be(expected.synapseTimingDescription.facilitator.base)
+        actual.synapseTimingDescription.facilitator.magnitude should be(expected.synapseTimingDescription.facilitator.magnitude)
+        actual.synapseTimingDescription.facilitator.timeConstant should be(expected.synapseTimingDescription.facilitator.timeConstant)
+
+        actual.locationDescription.toString should be(expected.locationDescription.toString)
+      })
+    }
+  }
+
+  /**
+    * Creates the expected neuron descriptions
+    * @return A `map(neuron_id -> neuron_description)` holding the expected neuron descriptions
+    */
+  def neuronDescriptions(): Map[String, NeuronDescription] = {
+
+    /*
+    // input layer
+    (nid=in-1, grp=group1, nty=mi, mst=1 mV, inh=f, rfp=2 ms, rfb=0.1 µWb, mnp=0 mV, mpd=2500 ms, mpr=2 ms, mpn=0.0 mV, wnm=0, spp=1.1 mV, csp=0.1 m/s,
+        ipb=0 mV, ipl=0 mV, ipd=3600 s,
+        WDF=(fnc=zer),
+        SRP=(fcb=1000, fcm=0.1, fct=100 ms, dpb=1000, dpm=0.1, dpt=100 ms),
+        WLF=(fnc=bnd, lwb=0.0, upb=1.0),
+        LOC=(cst=ct, px1=-300 µm, px2=0µm, px3=100 µm)
+    )
+     */
+    val inputNeuron1 = NeuronDescription(
+      neuronId = "in-1",
+      groupId = "group1",
+      neuronSpecificParams = MonostableIntegratorParams(spikeThreshold = Millivolts(1)),
+      inhibitor = false,
+
+      refractoryPeriod = Milliseconds(2), baseRefractoriness = Webers(1e-7),
+
+      minMembranePotential = Millivolts(0),
+      membranePotentialDecayHalfLife = Milliseconds(2500), membranePotentialRiseHalfLife = Milliseconds(2),
+      membranePotentialNoise = Millivolts(0),
+
+      spikePotential = Millivolts(1.1),
+
+      conductanceSpeed = MetersPerSecond(0.1),
+
+      intrinsicPlasticityBase = Millivolts(0), intrinsicPlasticityLearningRate = Millivolts(0), intrinsicPlasticityDecayHalfLife = Seconds(3600),
+
+      weightNoiseMagnitude = 0,
+      weightDecayDescription = WeightDecayDescription(NoDecayParams()),
+      weightLimitDescription = WeightLimitDescription(BoundedParams(lowerBound = 0, upperBound = 1)),
+
+      synapseTimingDescription = SignalReleaseProbabilityDescription(
+        facilitator = SignalTimingFunction(base = 1000, magnitude = 0.1, timeConstant = Milliseconds(100)),
+        depletion = SignalTimingFunction(base = 1000, magnitude = 0.1, timeConstant = Milliseconds(100))
+      ),
+
+      locationDescription = new LocationDescription(point = ("-300 µm", "0 µm", "100 µm"), coordinateType = CARTESIAN.name)
+    )
+
+    /*
+    (nid=in-2, grp=group1, nty=mi, mst=1 mV, inh=f, rfp=2 ms, rfb=0.1 µWb, mnp=0 mV, mpd=2500 ms, mpr=2 ms, mpn=0.0 mV, wnm=0, spp=1.1 mV, csp=0.1 m/s,
+        ipb=0 mV, ipl=0 mV, ipd=3600 s,
+        WDF=(fnc=zer),
+        SRP=(fcb=1000, fcm=0.1, fct=100 ms, dpb=1000, dpm=0.1, dpt=100 ms),
+        WLF=(fnc=bnd, lwb=0.0, upb=1.0),
+        LOC=(cst=ct, px1=300 µm, px2=0 µm, px3=100 µm)
+    )
+     */
+    val inputNeuron2 = NeuronDescription(
+      neuronId = "in-2",
+      groupId = "group1",
+      neuronSpecificParams = MonostableIntegratorParams(spikeThreshold = Millivolts(1)),
+      inhibitor = false,
+
+      refractoryPeriod = Milliseconds(2), baseRefractoriness = Webers(1e-7),
+
+      minMembranePotential = Millivolts(0),
+      membranePotentialDecayHalfLife = Milliseconds(2500), membranePotentialRiseHalfLife = Milliseconds(2),
+      membranePotentialNoise = Millivolts(0),
+
+      spikePotential = Millivolts(1.1),
+
+      conductanceSpeed = MetersPerSecond(0.1),
+
+      intrinsicPlasticityBase = Millivolts(0), intrinsicPlasticityLearningRate = Millivolts(0), intrinsicPlasticityDecayHalfLife = Seconds(3600),
+
+      weightNoiseMagnitude = 0,
+      weightDecayDescription = WeightDecayDescription(NoDecayParams()),
+      weightLimitDescription = WeightLimitDescription(BoundedParams(lowerBound = 0, upperBound = 1)),
+
+      synapseTimingDescription = SignalReleaseProbabilityDescription(
+        facilitator = SignalTimingFunction(base = 1000, magnitude = 0.1, timeConstant = Milliseconds(100)),
+        depletion = SignalTimingFunction(base = 1000, magnitude = 0.1, timeConstant = Milliseconds(100))
+      ),
+
+      locationDescription = new LocationDescription(point = ("300 µm", "0 µm", "100 µm"), coordinateType = CARTESIAN.name)
+    )
+
+    /*
+    (nid=inh-1, grp=group1, nty=mi, mst=0.4 mV, inh=t, rfp=0.1 ms, rfb=0.1 µWb, mnp=0 mV, mpd=250 ms, mpr=2 ms, mpn=0.0 mV, wnm=0, spp=0.5 mV, csp=0.08 m/s,
+        ipb=0 mV, ipl=0 mV, ipd=3600 s,
+        WDF=(fnc=exp, dhl=10 s),
+        SRP=(fcb=1000, fcm=0, fct=100 ms, dpb=1000, dpm=0, dpt=100 ms),
+        WLF=(fnc=bnd, lwb=0.0, upb=1.5),
+        LOC=(cst=ct, px1=-290 µm, px2=0 µm, px3=0 µm)
+    )
+     */
+    val inhibNeuron1 = NeuronDescription(
+      neuronId = "inh-1",
+      groupId = "group1",
+      neuronSpecificParams = MonostableIntegratorParams(spikeThreshold = Millivolts(0.4)),
+      inhibitor = true,
+
+      refractoryPeriod = Milliseconds(0.1), baseRefractoriness = Webers(1e-7),
+
+      minMembranePotential = Millivolts(0),
+      membranePotentialDecayHalfLife = Milliseconds(250), membranePotentialRiseHalfLife = Milliseconds(2),
+      membranePotentialNoise = Millivolts(0),
+
+      spikePotential = Millivolts(0.5),
+
+      conductanceSpeed = MetersPerSecond(0.08),
+
+      intrinsicPlasticityBase = Millivolts(0), intrinsicPlasticityLearningRate = Millivolts(0), intrinsicPlasticityDecayHalfLife = Seconds(3600),
+
+      weightNoiseMagnitude = 0,
+      weightDecayDescription = WeightDecayDescription(ExponentialDecayParams(decayHalfLife = Seconds(10))),
+      weightLimitDescription = WeightLimitDescription(BoundedParams(lowerBound = 0, upperBound = 1.5)),
+
+      synapseTimingDescription = SignalReleaseProbabilityDescription(
+        facilitator = SignalTimingFunction(base = 1000, magnitude = 0, timeConstant = Milliseconds(100)),
+        depletion = SignalTimingFunction(base = 1000, magnitude = 0, timeConstant = Milliseconds(100))
+      ),
+
+      locationDescription = new LocationDescription(point = ("-290 µm", "0 µm", "0 µm"), coordinateType = CARTESIAN.name)
+    )
+
+    /*
+    (nid=inh-2, grp=group1, nty=mi, mst=0.4 mV, inh=t, rfp=0.1 ms, rfb=0.1 µWb, mnp=0 mV, mpd=250 ms, mpr=2 ms, mpn=0.0 mV, wnm=0, spp=0.5 mV, csp=0.08 m/s,
+        ipb=0 mV, ipl=0 mV, ipd=3600 s,
+        WDF=(fnc=exp, dhl=10 s),
+        SRP=(fcb=1000, fcm=0, fct=100 ms, dpb=1000, dpm=0, dpt=100 ms),
+        WLF=(fnc=bnd, lwb=0.0, upb=1.5),
+        LOC=(cst=ct, px1=290 µm, px2=0 µm, px3=0 µm)
+    )
+     */
+    val inhibNeuron2 = NeuronDescription(
+      neuronId = "inh-2",
+      groupId = "group1",
+      neuronSpecificParams = MonostableIntegratorParams(spikeThreshold = Millivolts(0.4)),
+      inhibitor = true,
+
+      refractoryPeriod = Milliseconds(0.1), baseRefractoriness = Webers(1e-7),
+
+      minMembranePotential = Millivolts(0),
+      membranePotentialDecayHalfLife = Milliseconds(250), membranePotentialRiseHalfLife = Milliseconds(2),
+      membranePotentialNoise = Millivolts(0),
+
+      spikePotential = Millivolts(0.5),
+
+      conductanceSpeed = MetersPerSecond(0.08),
+
+      intrinsicPlasticityBase = Millivolts(0), intrinsicPlasticityLearningRate = Millivolts(0), intrinsicPlasticityDecayHalfLife = Seconds(3600),
+
+      weightNoiseMagnitude = 0,
+      weightDecayDescription = WeightDecayDescription(ExponentialDecayParams(decayHalfLife = Seconds(10))),
+      weightLimitDescription = WeightLimitDescription(BoundedParams(lowerBound = 0, upperBound = 1.5)),
+
+      synapseTimingDescription = SignalReleaseProbabilityDescription(
+        facilitator = SignalTimingFunction(base = 1000, magnitude = 0, timeConstant = Milliseconds(100)),
+        depletion = SignalTimingFunction(base = 1000, magnitude = 0, timeConstant = Milliseconds(100))
+      ),
+
+      locationDescription = new LocationDescription(point = ("290 µm", "0 µm", "0 µm"), coordinateType = CARTESIAN.name)
+    )
+
+    /*
+    (nid=out-1, grp=group1, nty=mi, mst=1.0 mV, inh=f, rfp=20 ms, rfb=0.1 µWb, mnp=0 mV, mpd=2500 ms, mpr=2 ms, mpn=0.0 mV, wnm=1e-5, spp=1 mV, csp=1 m/s,
+        ipb=0 mV, ipl=0 nV, ipd=3600 s,
+        WDF=(fnc=zer),
+        SRP=(fcb=1000, fcm=0.1, fct=100 ms, dpb=1000, dpm=10, dpt=100 ms),
+        WLF=(fnc=bnd, lwb=0.0, upb=1.0),
+        LOC=(cst=ct, px1=-300 µm, px2=0 µm, px3=0 µm)
+    )
+     */
+    val outputNeuron1 = NeuronDescription(
+      neuronId = "out-1",
+      groupId = "group1",
+      neuronSpecificParams = MonostableIntegratorParams(spikeThreshold = Millivolts(1)),
+      inhibitor = false,
+
+      refractoryPeriod = Milliseconds(20), baseRefractoriness = Webers(1e-7),
+
+      minMembranePotential = Millivolts(0),
+      membranePotentialDecayHalfLife = Milliseconds(2500), membranePotentialRiseHalfLife = Milliseconds(2),
+      membranePotentialNoise = Millivolts(0),
+
+      spikePotential = Millivolts(1),
+
+      conductanceSpeed = MetersPerSecond(1),
+
+      intrinsicPlasticityBase = Millivolts(0), intrinsicPlasticityLearningRate = Millivolts(0), intrinsicPlasticityDecayHalfLife = Seconds(3600),
+
+      weightNoiseMagnitude = 1e-5,
+      weightDecayDescription = WeightDecayDescription(NoDecayParams()),
+      weightLimitDescription = WeightLimitDescription(BoundedParams(lowerBound = 0, upperBound = 1)),
+
+      synapseTimingDescription = SignalReleaseProbabilityDescription(
+        facilitator = SignalTimingFunction(base = 1000, magnitude = 0.1, timeConstant = Milliseconds(100)),
+        depletion = SignalTimingFunction(base = 1000, magnitude = 10, timeConstant = Milliseconds(100))
+      ),
+
+      locationDescription = new LocationDescription(point = ("-300 µm", "0 µm", "0 µm"), coordinateType = CARTESIAN.name)
+    )
+
+    /*
+    (nid=out-2, grp=group1, nty=mi, mst=1.0 mV, inh=f, rfp=20 ms, rfb=0.1 µWb, mnp=0 mV, mpd=2500 ms, mpr=2 ms, mpn=0.0 mV, wnm=1e-5, spp=1 mV, csp=1 m/s,
+        ipb=0 mV, ipl=0 nV, ipd=3600 s,
+        WDF=(fnc=zer),
+        SRP=(fcb=1000, fcm=0.1, fct=100 ms, dpb=1000, dpm=10, dpt=100 ms),
+        WLF=(fnc=bnd, lwb=0.0, upb=1.0),
+        LOC=(cst=ct, px1=300 µm, px2=0 µm, px3=0 µm)
+    )
+     */
+    val outputNeuron2 = NeuronDescription(
+      neuronId = "out-2",
+      groupId = "group1",
+      neuronSpecificParams = MonostableIntegratorParams(spikeThreshold = Millivolts(1)),
+      inhibitor = false,
+
+      refractoryPeriod = Milliseconds(20), baseRefractoriness = Webers(1e-7),
+
+      minMembranePotential = Millivolts(0),
+      membranePotentialDecayHalfLife = Milliseconds(2500), membranePotentialRiseHalfLife = Milliseconds(2),
+      membranePotentialNoise = Millivolts(0),
+
+      spikePotential = Millivolts(1),
+
+      conductanceSpeed = MetersPerSecond(1),
+
+      intrinsicPlasticityBase = Millivolts(0), intrinsicPlasticityLearningRate = Millivolts(0), intrinsicPlasticityDecayHalfLife = Seconds(3600),
+
+      weightNoiseMagnitude = 1e-5,
+      weightDecayDescription = WeightDecayDescription(NoDecayParams()),
+      weightLimitDescription = WeightLimitDescription(BoundedParams(lowerBound = 0, upperBound = 1)),
+
+      synapseTimingDescription = SignalReleaseProbabilityDescription(
+        facilitator = SignalTimingFunction(base = 1000, magnitude = 0.1, timeConstant = Milliseconds(100)),
+        depletion = SignalTimingFunction(base = 1000, magnitude = 10, timeConstant = Milliseconds(100))
+      ),
+
+      locationDescription = new LocationDescription(point = ("300 µm", "0 µm", "0 µm"), coordinateType = CARTESIAN.name)
+    )
+
+    Map(
+      "in-1" -> inputNeuron1, "in-2" -> inputNeuron2,
+      "inh-1" -> inhibNeuron1, "inh-2" -> inhibNeuron2,
+      "out-1" -> outputNeuron1, "out-2" -> outputNeuron2
+    )
   }
 }
