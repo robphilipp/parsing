@@ -102,6 +102,7 @@ class DnaParserTest extends BaseSpec {
         |LRN=[
         |    //(fnc=stdp_soft, ina=0.04, inp=30 ms, exa=0.02, exp=10 ms),
         |    (fnc=stdp_soft, ina=0.06, inp=15 ms, exa=0.02, exp=10 ms),
+        |    (fnc=stdp_hard, ina=0.08, inp=23 ms, exa=0.04, exp=13 ms),
         |    //(fnc=stdp_hard, ina=0.06, inp=15 ms, exa=0.02, exp=10 ms),
         |    //(fnc=stdp_alpha, bln=-1, alr=0.02, atc=22 ms),
         |    //(fnc=stdp_alpha, bln=-1, alr=0.02, atc=22 ms),
@@ -113,24 +114,24 @@ class DnaParserTest extends BaseSpec {
 
     val parser = new DnaParser
     val result: Either[List[String], NetworkDescription] = parser.parseDna(testData)
-
-    /*
-      (nid=in-1, grp=group1, nty=mi, mst=1 mV, inh=f, rfp=2 ms, rfb=0.1 µWb, mnp=0 mV, mpd=2500 ms, mpr=2 ms, mpn=0.0 mV, wnm=0, spp=1.1 mV, csp=0.1 m/s,
-        ipb=0 mV, ipl=0 mV, ipd=3600 s,
-        WDF=(fnc=zer),
-        SRP=(fcb=1000, fcm=0.1, fct=100 ms, dpb=1000, dpm=0.1, dpt=100 ms),
-        WLF=(fnc=bnd, lwb=0.0, upb=1.0),
-        LOC=(cst=ct, px1=-300 µm, px2=0µm, px3=100 µm)
-     */
     val expectedNeuronDescriptions = neuronDescriptions()
+
+    val description = result.right.get
+    val actualNeuronDescriptions: Map[String, NeuronDescription] = description.neurons
+
+    "have the six described neurons" in {
+      // there should be 6 neurons
+      actualNeuronDescriptions.size should be(6)
+
+      // the neuron IDs should match the file
+      actualNeuronDescriptions.keySet == Set("in-1", "in-2", "inh-1", "inh-2", "out-1", "out-2")
+    }
 
     "parse without errors" in {
       // there should be no parsing errors
       result.isLeft should be(false)
       result.isRight should be(true)
     }
-
-    val description = result.right.get
 
     "reparse the fragment into a matching description" in {
       // create a dna fragment from the network description
@@ -165,19 +166,10 @@ class DnaParserTest extends BaseSpec {
       groups("group2").params.asInstanceOf[RemoteGroupParams].port should be(2552)
     }
 
-    val neurons: Map[String, NeuronDescription] = description.neurons
-    "have the six described neurons" in {
-      // there should be 6 neurons
-      neurons.size should be(6)
-
-      // the neuron IDs should match the file
-      neurons.keySet == Set("in-1", "in-2", "inh-1", "inh-2", "out-1", "out-2")
-    }
-
     "have the parsed neuron descriptions matching the expected neuron descriptions" in {
       // explicit checks because fragments (strings) don't always match in format
       expectedNeuronDescriptions.foreach({ case (id, expected) =>
-        val actual = neurons(id)
+        val actual = actualNeuronDescriptions(id)
 
         // neuron characteristics
         actual.neuronId should be(expected.neuronId)
@@ -221,10 +213,39 @@ class DnaParserTest extends BaseSpec {
         actual.locationDescription.toString should be(expected.locationDescription.toString)
       })
     }
+
+    "have have 4 connections from input to output layer, 2 connections from inhibition to output layer, and 2 from output to inhibition layer connections" in {
+      val actualConnections: Map[(String, String), ConnectionDescription] = description.connections
+        .map(description => (description.preSynapticNeuronId, description.postSynapticNeuronId) -> description)
+        .toMap
+
+      val expectedConnections = connectionsDescriptions()
+
+      actualConnections.size should be(expectedConnections.size)
+
+      // all the expected connections should be present in the actual connections, and the
+      // individual connections should be the same
+      expectedConnections.foreach({case (prePost, expected) =>
+          actualConnections(prePost) should be(expected)
+      })
+    }
+
+    "have all the learning functions defined in the description" in {
+      val actualLearningFunctions: Map[String, LearningFunctionDescription] = description.learningFunctions
+
+      val expectedLearningFunctions = learningFunctionDescriptions()
+
+      actualLearningFunctions.size should be(expectedLearningFunctions.size)
+
+      expectedLearningFunctions.foreach({case (name, expected) =>
+          actualLearningFunctions(name) should be(expected)
+      })
+    }
   }
 
   /**
     * Creates the expected neuron descriptions
+    *
     * @return A `map(neuron_id -> neuron_description)` holding the expected neuron descriptions
     */
   def neuronDescriptions(): Map[String, NeuronDescription] = {
@@ -468,6 +489,105 @@ class DnaParserTest extends BaseSpec {
       "in-1" -> inputNeuron1, "in-2" -> inputNeuron2,
       "inh-1" -> inhibNeuron1, "inh-2" -> inhibNeuron2,
       "out-1" -> outputNeuron1, "out-2" -> outputNeuron2
+    )
+  }
+
+  /**
+    * @return A `map((pre, post) -> description)` holding the pre and post synaptic neuron IDs and their
+    *         associated connection description
+    */
+  def connectionsDescriptions(): Map[(String, String), ConnectionDescription] = {
+    Map(
+      // (prn=in-{1,2}, psn=out-{1,2}, cnw=0.5, eqw=0.5, lrn=stdp_alpha),
+      ("in-1", "out-1") -> ConnectionDescription(
+        preSynapticNeuronId = "in-1",
+        postSynapticNeuronId = "out-1",
+        initialWeight = 0.5,
+        equilibriumWeight = 0.5,
+        learningFunctionName = "stdp_alpha"
+      ),
+      ("in-1", "out-2") -> ConnectionDescription(
+        preSynapticNeuronId = "in-1",
+        postSynapticNeuronId = "out-2",
+        initialWeight = 0.5,
+        equilibriumWeight = 0.5,
+        learningFunctionName = "stdp_alpha"
+      ),
+      ("in-2", "out-1") -> ConnectionDescription(
+        preSynapticNeuronId = "in-2",
+        postSynapticNeuronId = "out-1",
+        initialWeight = 0.5,
+        equilibriumWeight = 0.5,
+        learningFunctionName = "stdp_alpha"
+      ),
+      ("in-2", "out-2") -> ConnectionDescription(
+        preSynapticNeuronId = "in-2",
+        postSynapticNeuronId = "out-2",
+        initialWeight = 0.5,
+        equilibriumWeight = 0.5,
+        learningFunctionName = "stdp_alpha"
+      ),
+
+      // (prn=out-1, psn=inh-1, cnw=1, eqw=1, lrn=flat),
+      // (prn=out-2, psn=inh-2, cnw=1, eqw=1, lrn=flat),
+      ("out-1", "inh-1") -> ConnectionDescription(
+        preSynapticNeuronId = "out-1",
+        postSynapticNeuronId = "inh-1",
+        initialWeight = 1,
+        equilibriumWeight = 1,
+        learningFunctionName = "flat"
+      ),
+      ("out-2", "inh-2") -> ConnectionDescription(
+        preSynapticNeuronId = "out-2",
+        postSynapticNeuronId = "inh-2",
+        initialWeight = 1,
+        equilibriumWeight = 1,
+        learningFunctionName = "flat"
+      ),
+
+      // (prn=inh-1, psn=out-2, cnw=1, eqw=1, lrn=flat),
+      // (prn=inh-2, psn=out-1, cnw=1, eqw=1, lrn=flat)
+      ("inh-1", "out-2") -> ConnectionDescription(
+        preSynapticNeuronId = "inh-1",
+        postSynapticNeuronId = "out-2",
+        initialWeight = 1,
+        equilibriumWeight = 1,
+        learningFunctionName = "flat"
+      ),
+      ("inh-2", "out-1") -> ConnectionDescription(
+        preSynapticNeuronId = "inh-2",
+        postSynapticNeuronId = "out-1",
+        initialWeight = 1,
+        equilibriumWeight = 1,
+        learningFunctionName = "flat"
+      )
+    )
+  }
+
+  def learningFunctionDescriptions(): Map[String, LearningFunctionDescription] = {
+    Map(
+      // (fnc=stdp_alpha, bln=-1, alr=0.04, atc=22 ms)
+      "stdp_alpha" -> LearningFunctionDescription(StdpAlphaLearningParams(
+        baseline = -1,
+        timeConstant = Milliseconds(22),
+        learningRate = 0.04
+      )),
+      // (fnc=stdp_soft, ina=0.06, inp=15 ms, exa=0.02, exp=10 ms)
+      "stdp_soft" -> LearningFunctionDescription(StdpSoftLimitLearningParams(
+        inhibitionAmplitude = 0.06,
+        inhibitionPeriod = Milliseconds(15),
+        excitationAmplitude = 0.02,
+        excitationPeriod = Milliseconds(10)
+      )),
+      // (fnc=stdp_hard, ina=0.08, inp=23 ms, exa=0.04, exp=13 ms)
+      "stdp_hard" -> LearningFunctionDescription(StdpHardLimitLearningParams(
+        inhibitionAmplitude = 0.08,
+        inhibitionPeriod = Milliseconds(23),
+        excitationAmplitude = 0.04,
+        excitationPeriod = Milliseconds(13)
+      )),
+      // (fnc=flat)
+      "flat" -> LearningFunctionDescription(NoLearningParams())
     )
   }
 }
