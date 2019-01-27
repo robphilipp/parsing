@@ -9,12 +9,12 @@ import squants.time.{Milliseconds, Seconds}
 
 class DnaParserTest extends BaseSpec {
 
-  val parser = new DnaParser
+  val parser = DnaParser()
 
   "for a valid network description file, a DNA parser" must {
 
     "have the six described neurons" in {
-      val result: Either[List[String], NetworkDescription] = parser.parseDna(wtaNetworkDna())
+      val result: Either[Seq[String], NetworkDescription] = parser.parseDna(wtaNetworkDna())
       val description = result.right.get
       val actualNeuronDescriptions: Map[String, NeuronDescription] = description.neurons
 
@@ -26,8 +26,7 @@ class DnaParserTest extends BaseSpec {
     }
 
     "parse without errors" in {
-      val result: Either[List[String], NetworkDescription] = parser.parseDna(wtaNetworkDna())
-      val description = result.right.get
+      val result: Either[Seq[String], NetworkDescription] = parser.parseDna(wtaNetworkDna())
 
       // there should be no parsing errors
       result.isLeft should be(false)
@@ -35,7 +34,7 @@ class DnaParserTest extends BaseSpec {
     }
 
     "reparse the fragment into a matching description" in {
-      val result: Either[List[String], NetworkDescription] = parser.parseDna(wtaNetworkDna())
+      val result: Either[Seq[String], NetworkDescription] = parser.parseDna(wtaNetworkDna())
       val expectedNeuronDescriptions = neuronDescriptions()
 
       val description = result.right.get
@@ -52,7 +51,7 @@ class DnaParserTest extends BaseSpec {
     }
 
     "have the correct group description" in {
-      val result: Either[List[String], NetworkDescription] = parser.parseDna(wtaNetworkDna())
+      val result: Either[Seq[String], NetworkDescription] = parser.parseDna(wtaNetworkDna())
       val description = result.right.get
       val groups: Map[String, GroupDescription] = description.groups
 
@@ -76,7 +75,7 @@ class DnaParserTest extends BaseSpec {
     }
 
     "have the parsed neuron descriptions matching the expected neuron descriptions" in {
-      val result: Either[List[String], NetworkDescription] = parser.parseDna(wtaNetworkDna())
+      val result: Either[Seq[String], NetworkDescription] = parser.parseDna(wtaNetworkDna())
       val expectedNeuronDescriptions = neuronDescriptions()
 
       val description = result.right.get
@@ -130,7 +129,7 @@ class DnaParserTest extends BaseSpec {
     }
 
     "have have 4 connections from input to output layer, 2 connections from inhibition to output layer, and 2 from output to inhibition layer connections" in {
-      val result: Either[List[String], NetworkDescription] = parser.parseDna(wtaNetworkDna())
+      val result: Either[Seq[String], NetworkDescription] = parser.parseDna(wtaNetworkDna())
       val description = result.right.get
 
       val actualConnections: Map[(String, String), ConnectionDescription] = description.connections
@@ -149,7 +148,7 @@ class DnaParserTest extends BaseSpec {
     }
 
     "have all the learning functions defined in the description" in {
-      val result: Either[List[String], NetworkDescription] = parser.parseDna(wtaNetworkDna())
+      val result: Either[Seq[String], NetworkDescription] = parser.parseDna(wtaNetworkDna())
       val description = result.right.get
 
       val actualLearningFunctions: Map[String, LearningFunctionDescription] = description.learningFunctions
@@ -167,7 +166,7 @@ class DnaParserTest extends BaseSpec {
   "for an invalid network description file, a DNA parser" must {
 
     "fail when attempting to parse a description where connections have an invalid parameter" in {
-     val result: Either[List[String], NetworkDescription] = parser.parseDna(invalidNetwork_extraCommaInConnections())
+     val result: Either[Seq[String], NetworkDescription] = parser.parseDna(invalidNetwork_extraCommaInConnections())
       result.isLeft should be(true)
 //      result.isRight should be(true)
 

@@ -2,7 +2,21 @@ package com.digitalcipher.spiked.construction.validation
 
 import com.digitalcipher.spiked.construction.description.NetworkDescription
 
+/**
+  * Functions for validating the references in the network description. For example, validates
+  * that the connections refer to only existing neurons and learning functions, and that
+  * neurons refer only to existing groups.
+  */
 object NetworkValidator {
+
+  /**
+    * Runs through all the validations, collecting the errors, and returning the errors if there are
+    * any. If there are no errors, then returns the network description
+    * @param description The network description
+    * @return Either the error messages if any reference violations occured, or the network desctiption
+    */
+  def validateReferences(description: NetworkDescription): Either[Seq[String], NetworkDescription] =
+      validateConnectionReferences(description).map(description => validateGroupReferences(description)).joinRight
 
   /**
     * Validates that all the neurons and learning functions referenced in the connections
@@ -10,7 +24,7 @@ object NetworkValidator {
     * @param description The network description
     * @return A validation result with any missing references
     */
-  def validateConnectionReferences(description: NetworkDescription): ValidationResult = {
+  def validateConnectionReferences(description: NetworkDescription): Either[Seq[String], NetworkDescription] = {
     val neuronIds = description.neurons.keySet
     val learningFunctions = description.learningFunctions.keySet
 
@@ -44,11 +58,21 @@ object NetworkValidator {
           s"lrn=${connection.learningFunctionName}" +
           s")")
 
-    ValidationResult(missing)
+    if(missing.isEmpty) Right(description) else Left(missing)
   }
 
-  case class ValidationResult(missingReferences: Seq[String] = Seq.empty) {
-    def success: Boolean = missingReferences.isEmpty
-    def failed: Boolean = missingReferences.nonEmpty
+  def validateGroupReferences(description: NetworkDescription): Either[Seq[String], NetworkDescription] = {
+    val groupIds = description.groups.keySet
+
+    val missing: Seq[String] = description.neurons.values
+      .filter(neuron => !groupIds.contains(neuron.groupId))
+      .map(neuron => s"Group '${neuron.groupId}' not found in groups; (" +
+        s"nid=${neuron.neuronId}, " +
+        s"grp=${neuron.groupId}, " +
+        s"${neuron.neuronSpecificParams.fragment}, ...)"
+      )
+      .toSeq
+
+    if(missing.isEmpty) Right(description) else Left(missing)
   }
 }

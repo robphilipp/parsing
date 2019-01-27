@@ -137,7 +137,7 @@ LRN=[
   *
   * Note that units of time are `ms`, units of electric potential are `mV`, ad units of distance are `mm`.
   */
-class DnaParser extends RegexParsers {
+class DnaParser(validateReferences: Boolean) extends RegexParsers {
 
   /**
     * Parse the DNA sequence into a network description
@@ -145,7 +145,7 @@ class DnaParser extends RegexParsers {
     * @param dna The DNA sequence to be parsed
     * @return A [[NetworkDescription]] from the parsed DNA sequence
     */
-  def parseDna(dna: String): Either[List[String], NetworkDescription] = {
+  def parseDna(dna: String): Either[Seq[String], NetworkDescription] = {
     parseAll(description, cleanDna(dna)) match {
       case Success(result, _) =>
         val groupResults = result(GROUPS.name).asInstanceOf[List[Either[String, (String, GroupDescription)]]]
@@ -172,12 +172,18 @@ class DnaParser extends RegexParsers {
         val connectionResultSuccess = connectionResults.filter(either => either.isRight).map(either => either.right.get)
         val learningResultSuccess = learningResults.filter(either => either.isRight).map(either => either.right.get).toMap
 
-        Right(new NetworkDescription(
+        val networkDescription = new NetworkDescription(
           groups = groupResultSuccess,
           neurons = neuronResultSuccess,
           connections = connectionResultSuccess,
           learningFunctions = learningResultSuccess
-        ))
+        )
+
+        if(validateReferences) {
+          validateReferences(networkDescription)
+        } else {
+          Right(networkDescription)
+        }
 
       case Failure(message, next) => Left(List(message.toString, next.toString))
 
@@ -1395,6 +1401,14 @@ class DnaParser extends RegexParsers {
 }
 
 object DnaParser {
+
+  /**
+    * Apply function that acts as a constructor for the parse.
+    * @param validateReference (Optional) set to `true` to validate the references and treat any
+    *                          reference violations as error; `false` (default) to skip the reference checks
+    * @return A [[DnaParser]]
+    */
+  def apply(validateReference: Boolean = false): DnaParser = new DnaParser(validateReference)
 
   /**
     * Construct a [[LocationDescription]] based on the specified coordinate system type and the tuple of projections
