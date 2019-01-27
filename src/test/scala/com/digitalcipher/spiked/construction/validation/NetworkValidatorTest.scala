@@ -3,21 +3,21 @@ package com.digitalcipher.spiked.construction.validation
 import com.digitalcipher.spiked.BaseSpec
 import com.digitalcipher.spiked.construction.description.NetworkDescription
 import com.digitalcipher.spiked.construction.parsing.DnaParser
-import com.digitalcipher.spiked.construction.validation.NetworkValidator.validateConnection
+import com.digitalcipher.spiked.construction.validation.NetworkValidator.validateConnectionReferences
 
 class NetworkValidatorTest extends BaseSpec {
 
   "for a valid network description" must {
 
     "connection validation should succeed" in {
-      validateConnection(network_valid()).success should be(true)
+      validateConnectionReferences(network_valid()).success should be(true)
     }
   }
 
   "for an invalid network description" must {
 
     "connection validation should fail when the connect references a non-existent learning function" in {
-      val validation = validateConnection(network_connectionReferencesNonExistentLearningFunction())
+      val validation = validateConnectionReferences(network_connectionReferencesNonExistentLearningFunction())
 
       // should have succeeded
       validation.failed should be(true)
@@ -25,10 +25,10 @@ class NetworkValidatorTest extends BaseSpec {
 
       // there are 5 errors; 4 from the input -> output connections with the misspelled learning function 'stdp_aplha'
       // and 1 from the output -> inhibition connection with the non-existing learning function 'flatly'
-      validation.errors.size should be(5)
+      validation.missingReferences.size should be(5)
 
       // and the errors should be the same as those listed
-      validation.errors should be(Seq(
+      validation.missingReferences should be(Seq(
         "Learning function 'stdp_aplha' not found in learning functions; (prn=in-1, psn=out-1, cnw=0.5, eqw=0.5, lrn=stdp_aplha)",
         "Learning function 'stdp_aplha' not found in learning functions; (prn=in-1, psn=out-2, cnw=0.5, eqw=0.5, lrn=stdp_aplha)",
         "Learning function 'stdp_aplha' not found in learning functions; (prn=in-2, psn=out-1, cnw=0.5, eqw=0.5, lrn=stdp_aplha)",

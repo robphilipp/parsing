@@ -3,7 +3,14 @@ package com.digitalcipher.spiked.construction.validation
 import com.digitalcipher.spiked.construction.description.NetworkDescription
 
 object NetworkValidator {
-  def validateConnection(description: NetworkDescription): ValidationResult = {
+
+  /**
+    * Validates that all the neurons and learning functions referenced in the connections
+    * exist in the network description.
+    * @param description The network description
+    * @return A validation result with any missing references
+    */
+  def validateConnectionReferences(description: NetworkDescription): ValidationResult = {
     val neuronIds = description.neurons.keySet
     val learningFunctions = description.learningFunctions.keySet
 
@@ -40,8 +47,8 @@ object NetworkValidator {
     ValidationResult(missing)
   }
 
-  case class ValidationResult(errors: Seq[String] = Seq.empty) {
-    def success: Boolean = errors.isEmpty
-    def failed: Boolean = errors.nonEmpty
+  case class ValidationResult(missingReferences: Seq[String] = Seq.empty) {
+    def success: Boolean = missingReferences.isEmpty
+    def failed: Boolean = missingReferences.nonEmpty
   }
 }
