@@ -35,40 +35,40 @@ import scala.util.parsing.combinator.RegexParsers
   * }}}
   *
   * For example {{{
-	* (
-	* NRN=[
-	*     (nid=input-1; nty=mi; mst=15.0; inh=t; rfp=20.0; mnp=0.0; mpd=2500; spp=1.0; csp=10.0; WDF=(fnc=exp; dhl=100000); WLF=(fnc=bnd; lwb=-5.0; upb=5.0); LOC=(cst=ct; px1=0; px2=0; px3=0));
-	*     (nid=input-2; nty=mi; mst=15.0; inh=t; rfp=20.0; mnp=0.0; mpd=2500; spp=1.0; csp=10.0; WDF=(fnc=exp; dhl=100000); WLF=(fnc=bnd; lwb=-5.0; upb=5.0); LOC=(cst=ct; px1=10; px2=0; px3=0));
-	*     (nid=input-3; nty=mi; mst=15.0; inh=t; rfp=20.0; mnp=0.0; mpd=2500; spp=1.0; csp=10.0; WDF=(fnc=exp; dhl=100000); WLF=(fnc=bnd; lwb=-5.0; upb=5.0); LOC=(cst=ct; px1=0; px2=10; px3=0));
-	*     (nid=input-4; nty=mi; mst=15.0; inh=t; rfp=20.0; mnp=0.0; mpd=2500; spp=1.0; csp=10.0; WDF=(fnc=exp; dhl=100000); WLF=(fnc=bnd; lwb=-5.0; upb=5.0); LOC=(cst=ct; px1=10; px2=10; px3=0));
-	* 
-	*     (nid=hidden-1; nty=mi; mst=15.0; inh=t; rfp=20.0; mnp=0.0; mpd=2500; spp=1.0; csp=10.0; WDF=(fnc=exp; dhl=100000); WLF=(fnc=bnd; lwb=-5.0; upb=5.0); LOC=(cst=ct; px1=0; px2=0; px3=20));
-	*     (nid=hidden-2; nty=mi; mst=15.0; inh=t; rfp=20.0; mnp=0.0; mpd=2500; spp=1.0; csp=10.0; WDF=(fnc=exp; dhl=100000); WLF=(fnc=bnd; lwb=-5.0; upb=5.0); LOC=(cst=ct; px1=10; px2=0; px3=20));
-	*     (nid=hidden-3; nty=mi; mst=15.0; inh=t; rfp=20.0; mnp=0.0; mpd=2500; spp=1.0; csp=10.0; WDF=(fnc=exp; dhl=100000); WLF=(fnc=bnd; lwb=-5.0; upb=5.0); LOC=(cst=ct; px1=0; px2=10; px3=20));
-	*     (nid=hidden-4; nty=mi; mst=15.0; inh=t; rfp=20.0; mnp=0.0; mpd=2500; spp=1.0; csp=10.0; WDF=(fnc=exp; dhl=100000); WLF=(fnc=bnd; lwb=-5.0; upb=5.0); LOC=(cst=ct; px1=10; px2=10; px3=20));
-	* 
-	*     (nid=output-1; nty=mi; mst=15.0; inh=t; rfp=20.0; mnp=0.0; mpd=2500; spp=1.0; csp=10.0; WDF=(fnc=exp; dhl=100000); WLF=(fnc=bnd; lwb=-5.0; upb=5.0); LOC=(cst=ct; px1=0; px2=5; px3=60));
-	*     (nid=output-2; nty=mi; mst=15.0; inh=t; rfp=20.0; mnp=0.0; mpd=2500; spp=1.0; csp=10.0; WDF=(fnc=exp; dhl=100000); WLF=(fnc=bnd; lwb=-5.0; upb=5.0); LOC=(cst=ct; px1=10; px2=5; px3=60))
-	* ];
-	* 
-	* CON=[
-	*     (prn=input-{1:4:1}; psn=hidden-{1:3:1,4}; cnw=1.0; lrn=stdp);
-	*
-	*     (prn=hidden-1; psn=output-1; cnw=3.14; lrn=stdp);
-	*     (prn=hidden-1; psn=output-2; cnw=3.14; lrn=stdp);
-	*     (prn=hidden-2; psn=output-1; cnw=3.14; lrn=stdp);
-	*     (prn=hidden-2; psn=output-2; cnw=3.14; lrn=stdp);
-	*     (prn=hidden-3; psn=output-1; cnw=3.14; lrn=stdp);
-	*     (prn=hidden-3; psn=output-2; cnw=3.14; lrn=stdp);
-	*     (prn=hidden-4; psn=output-1; cnw=3.14; lrn=stdp);
-	*     (prn=hidden-4; psn=output-2; cnw=3.14; lrn=stdp)
-	* ];
-	* 
-	* LRN=[
-	*     (fnc=stdp; ina=0.035; inp=3; exa=0.035; exp=3);
-	*     (fnc=flat)
-	* ]
-	* )
+  * (
+  * NRN=[
+  *     (nid=input-1; nty=mi; mst=15.0; inh=t; rfp=20.0; mnp=0.0; mpd=2500; spp=1.0; csp=10.0; WDF=(fnc=exp; dhl=100000); WLF=(fnc=bnd; lwb=-5.0; upb=5.0); LOC=(cst=ct; px1=0; px2=0; px3=0));
+  *     (nid=input-2; nty=mi; mst=15.0; inh=t; rfp=20.0; mnp=0.0; mpd=2500; spp=1.0; csp=10.0; WDF=(fnc=exp; dhl=100000); WLF=(fnc=bnd; lwb=-5.0; upb=5.0); LOC=(cst=ct; px1=10; px2=0; px3=0));
+  *     (nid=input-3; nty=mi; mst=15.0; inh=t; rfp=20.0; mnp=0.0; mpd=2500; spp=1.0; csp=10.0; WDF=(fnc=exp; dhl=100000); WLF=(fnc=bnd; lwb=-5.0; upb=5.0); LOC=(cst=ct; px1=0; px2=10; px3=0));
+  *     (nid=input-4; nty=mi; mst=15.0; inh=t; rfp=20.0; mnp=0.0; mpd=2500; spp=1.0; csp=10.0; WDF=(fnc=exp; dhl=100000); WLF=(fnc=bnd; lwb=-5.0; upb=5.0); LOC=(cst=ct; px1=10; px2=10; px3=0));
+  *
+  *     (nid=hidden-1; nty=mi; mst=15.0; inh=t; rfp=20.0; mnp=0.0; mpd=2500; spp=1.0; csp=10.0; WDF=(fnc=exp; dhl=100000); WLF=(fnc=bnd; lwb=-5.0; upb=5.0); LOC=(cst=ct; px1=0; px2=0; px3=20));
+  *     (nid=hidden-2; nty=mi; mst=15.0; inh=t; rfp=20.0; mnp=0.0; mpd=2500; spp=1.0; csp=10.0; WDF=(fnc=exp; dhl=100000); WLF=(fnc=bnd; lwb=-5.0; upb=5.0); LOC=(cst=ct; px1=10; px2=0; px3=20));
+  *     (nid=hidden-3; nty=mi; mst=15.0; inh=t; rfp=20.0; mnp=0.0; mpd=2500; spp=1.0; csp=10.0; WDF=(fnc=exp; dhl=100000); WLF=(fnc=bnd; lwb=-5.0; upb=5.0); LOC=(cst=ct; px1=0; px2=10; px3=20));
+  *     (nid=hidden-4; nty=mi; mst=15.0; inh=t; rfp=20.0; mnp=0.0; mpd=2500; spp=1.0; csp=10.0; WDF=(fnc=exp; dhl=100000); WLF=(fnc=bnd; lwb=-5.0; upb=5.0); LOC=(cst=ct; px1=10; px2=10; px3=20));
+  *
+  *     (nid=output-1; nty=mi; mst=15.0; inh=t; rfp=20.0; mnp=0.0; mpd=2500; spp=1.0; csp=10.0; WDF=(fnc=exp; dhl=100000); WLF=(fnc=bnd; lwb=-5.0; upb=5.0); LOC=(cst=ct; px1=0; px2=5; px3=60));
+  *     (nid=output-2; nty=mi; mst=15.0; inh=t; rfp=20.0; mnp=0.0; mpd=2500; spp=1.0; csp=10.0; WDF=(fnc=exp; dhl=100000); WLF=(fnc=bnd; lwb=-5.0; upb=5.0); LOC=(cst=ct; px1=10; px2=5; px3=60))
+  * ];
+  *
+  * CON=[
+  *     (prn=input-{1:4:1}; psn=hidden-{1:3:1,4}; cnw=1.0; lrn=stdp);
+  *
+  *     (prn=hidden-1; psn=output-1; cnw=3.14; lrn=stdp);
+  *     (prn=hidden-1; psn=output-2; cnw=3.14; lrn=stdp);
+  *     (prn=hidden-2; psn=output-1; cnw=3.14; lrn=stdp);
+  *     (prn=hidden-2; psn=output-2; cnw=3.14; lrn=stdp);
+  *     (prn=hidden-3; psn=output-1; cnw=3.14; lrn=stdp);
+  *     (prn=hidden-3; psn=output-2; cnw=3.14; lrn=stdp);
+  *     (prn=hidden-4; psn=output-1; cnw=3.14; lrn=stdp);
+  *     (prn=hidden-4; psn=output-2; cnw=3.14; lrn=stdp)
+  * ];
+  *
+  * LRN=[
+  *     (fnc=stdp; ina=0.035; inp=3; exa=0.035; exp=3);
+  *     (fnc=flat)
+  * ]
+  * )
   * }}}
   *
   * Note that units of time are `ms`, units of electric potential are `mV`, ad units of distance are `mm`.
@@ -82,9 +82,8 @@ class DnaParser extends RegexParsers {
     * @return A [[NetworkDescription]] from the parsed DNA sequence
     */
   def parseDna(dna: String): Either[List[String], NetworkDescription] = {
-    val result = parseAll(description, stripSpaces(stripComments(dna)))
-
-      result.map(result => {
+    parseAll(description, cleanDna(dna)) match {
+      case Success(result, _) =>
         val groupResults = result(GROUPS.name).asInstanceOf[List[Either[String, (String, GroupDescription)]]]
         val neuronResults = result(NEURONS.name).asInstanceOf[List[Either[String, (String, NeuronDescription)]]]
         val connectionResults = result(CONNECTIONS.name).asInstanceOf[List[Either[String, ConnectionDescription]]]
@@ -96,10 +95,10 @@ class DnaParser extends RegexParsers {
         val connectionResultFailure = connectionResults.filter(either => either.isLeft).map(either => either.left.get)
         val learningResultFailures = learningResults.filter(either => either.isLeft).map(either => either.left.get)
 
-        if( groupResultFailure.nonEmpty ||
+        if (groupResultFailure.nonEmpty ||
           neuronResultFailure.nonEmpty ||
           connectionResultFailure.nonEmpty ||
-          learningResultFailures.nonEmpty ) {
+          learningResultFailures.nonEmpty) {
           return Left(groupResultFailure ::: neuronResultFailure ::: connectionResultFailure ::: learningResultFailures)
         }
 
@@ -115,28 +114,51 @@ class DnaParser extends RegexParsers {
           connections = connectionResultSuccess,
           learningFunctions = learningResultSuccess
         ))
-      })
-      .getOrElse(Left(List()))
+
+      case Failure(message, next) => Left(List(message.toString, next.toString))
+
+      case _ => Left(List("Parsing neither succeeded nor failed. Strange."))
+    }
   }
 
-  private def stripSpaces(dna: String): String = dna.replaceAll(" ", "")
+  /**
+    * Cleans the DNA string before handing it to the parser
+    * @param dna The DNA string to be cleaned
+    * @return The DNA string with trailing commas, comments, and white-space removed
+    */
+  private def cleanDna(dna: String): String = stripSpaces(stripComments(stripTrailingCommas(dna)))
+
+  /**
+    * Removes all white space characters
+    * @param dna The raw string
+    * @return The DNA stripped of all whitespaces
+    */
+  private def stripSpaces(dna: String): String = dna.replaceAll("""\s""", "")
 
   /**
     * Strips comments for the string before the parsing starts
+    *
     * @param dna The raw string
     * @return The DNA stripped of comments
     */
-  private def stripComments(dna: String): String = {
-    dna
+  private def stripComments(dna: String): String = dna
       // get rid of the /*...*/ comments
       .replaceAll("""/\*(.*?)[\r\n]*(.*?)\*/""", "")
       // get rid of the //... comments
       .replaceAll("""//[^\r\n]*""", "")
-  }
+
+
+  /**
+    * Strips all the new-line characters from the string before parsing
+    * @param dna The raw string
+    * @return The DNA stripped of new-line characters
+    */
+  private def stripTrailingCommas(dna: String): String = dna.replaceAll("""[,]+([\n\r]\])+""", "$1")
 
   /**
     * Enhances the way to specify Volts. With squants, can only specify mV or V. This method allows users to specify
     * nV, µV, mV, and V and converts the units appropriately
+    *
     * @param potential The potential as a number of a dimensioned-number
     * @return The electric potential converted from the number of dimensioned number
     */
@@ -219,6 +241,7 @@ class DnaParser extends RegexParsers {
     * Type of connection-weight learning that depends on the arrival of the pre-synaptic signal relative to the spike
     * time of the post-synaptic neuron.
     * {{{learningType ::= "stdp_soft" | "stdp_hard" | "flat".}}}
+    *
     * @return A [[Parser]] holding the learning type name
     */
   def learningType: Parser[String] = STDP_HARD.name | STDP_SOFT.name | STDP_ALPHA.name | NO_LEARNING.name
@@ -226,6 +249,7 @@ class DnaParser extends RegexParsers {
   /**
     * The learning-function key-value pair
     * {{{learningFunction ::= "fnc" = learningType.}}}
+    *
     * @return A [[Parser]] holding the learning function key-value pair
     */
   def learningFunction: Parser[(String, String)] = LEARNING_TYPE.name ~ "=" ~ learningType ^^ {
@@ -235,6 +259,7 @@ class DnaParser extends RegexParsers {
   /**
     * The inhibition amplitude for STDP learning
     * {{{inhibitionAmplitude ::= "ina" = number.}}}
+    *
     * @return A [[Parser]] holding the inhibition amplitude for STDP learning
     */
   def inhibitionAmplitude: Parser[(String, Double)] = INHIBITION_AMPLITUDE.name ~ "=" ~ number ^^ {
@@ -244,6 +269,7 @@ class DnaParser extends RegexParsers {
   /**
     * The inhibition period for STDP learning
     * {{{inhibitionAmplitude ::= "inp" = (dimensionedValue | number).}}}
+    *
     * @return A [[Parser]] holding the inhibition amplitude for STDP learning
     */
   def inhibitionPeriod: Parser[(String, Time)] = INHIBITION_PERIOD.name ~ "=" ~ (dimensionedNumber | number) ^^ {
@@ -253,6 +279,7 @@ class DnaParser extends RegexParsers {
   /**
     * The excitation amplitude for STDP learning
     * {{{excitationAmplitude ::= "exa" = number.}}}
+    *
     * @return A [[Parser]] holding the excitation amplitude for STDP learning
     */
   def excitationAmplitude: Parser[(String, Double)] = EXCITATION_AMPLITUDE.name ~ "=" ~ number ^^ {
@@ -262,6 +289,7 @@ class DnaParser extends RegexParsers {
   /**
     * The excitation period for STDP learning
     * {{{excitationAmplitude ::= "exp" = (dimensionedValue | number).}}}
+    *
     * @return A [[Parser]] holding the excitation amplitude for STDP learning
     */
   def excitationPeriod: Parser[(String, Time)] = EXCITATION_PERIOD.name ~ "=" ~ (dimensionedNumber | number) ^^ {
@@ -271,6 +299,7 @@ class DnaParser extends RegexParsers {
   /**
     * Parameters describing the learning function
     * {{{learningParam ::= inhibitionAmplitude | inhibitionPeriod | excitationAmplitude | excitationPeriod.}}}
+    *
     * @return A [[Parser]] holding a learning parameter
     */
   def learningParam: Parser[(String, Any)] = inhibitionAmplitude | inhibitionPeriod | excitationAmplitude | excitationPeriod
@@ -278,6 +307,7 @@ class DnaParser extends RegexParsers {
   /**
     * The alpha-function baseline (inhibition amplitude)
     * {{{alphaStdpBaseline ::= "bln" = number.}}}
+    *
     * @return A [[Parser]] holding the alpha-function baseline value
     */
   def alphaStdpBaseline: Parser[(String, Double)] = ALPHA_BASELINE.name ~ "=" ~ number ^^ {
@@ -287,6 +317,7 @@ class DnaParser extends RegexParsers {
   /**
     * The alpha-function time-constant
     * {{{alphaTimeConstant ::= "atc" = (dimensionedValue | number).}}}
+    *
     * @return A [[Parser]] holding the alpha-function time-constant
     */
   def alphaTimeConstant: Parser[(String, Time)] = ALPHA_TIME_CONSTANT.name ~ "=" ~ (dimensionedNumber | number) ^^ {
@@ -296,6 +327,7 @@ class DnaParser extends RegexParsers {
   /**
     * The alpha-function learning rate
     * {{{alphaStdpLearningRate ::= "alr" = number.}}}
+    *
     * @return A [[Parser]] holding the alpha-function learning rate
     */
   def alphaStdpLearningRate: Parser[(String, Double)] = ALPHA_LEARNING_RATE.name ~ "=" ~ number ^^ {
@@ -305,6 +337,7 @@ class DnaParser extends RegexParsers {
   /**
     * Parameters describing the alpha-learning function
     * {{{alphaLearningParam ::= alphaStdpBaseline | alphaStdpLearningRate | alphaTimeConstant.}}}
+    *
     * @return A [[Parser]] holding an alpha-learning parameter
     */
   def alphaLearningParam: Parser[(String, Any)] = alphaStdpBaseline | alphaStdpLearningRate | alphaTimeConstant
@@ -312,6 +345,7 @@ class DnaParser extends RegexParsers {
   /**
     * The hard-limit stdp learning function description
     * {{{stdpHardLearning ::= "(" \{ "fnc" = "stdp_hard", learningParam "," \} ")".}}}
+    *
     * @return A [[Parser]] holding a pair containing the learning function name and its associated description
     */
   def stdpHardLearning: Parser[Either[String, (String, LearningFunctionDescription)]] =
@@ -321,6 +355,7 @@ class DnaParser extends RegexParsers {
   /**
     * The soft-limit stdp learning function description
     * {{{stdpSoftLearning ::= "(" \{ "fnc" = "stdp_soft", learningParam "," \} ")".}}}
+    *
     * @return A [[Parser]] holding a pair containing the learning function name and its associated description
     */
   def stdpSoftLearning: Parser[Either[String, (String, LearningFunctionDescription)]] =
@@ -330,6 +365,7 @@ class DnaParser extends RegexParsers {
   /**
     * The alpha-function stdp learning function description
     * {{{stdpAlphaLearning ::= "(" \{ "fnc" = "stdp_alpha", alphaLearningParam "," \} ")".}}}
+    *
     * @return A [[Parser]] holding a pair containing the learning function name and its associated description
     */
   def stdpAlphaLearning: Parser[Either[String, (String, LearningFunctionDescription)]] =
@@ -339,6 +375,7 @@ class DnaParser extends RegexParsers {
   /**
     * The function description for no learning
     * {{{noLearning ::= "(" \{ "fnc" = "flat" ")".}}}
+    *
     * @return A [[Parser]] holding a pair containing the learning function name and its associated description
     */
   def noLearning: Parser[Either[String, (String, LearningFunctionDescription)]] =
@@ -353,6 +390,7 @@ class DnaParser extends RegexParsers {
   /**
     * The facilitation base
     * {{{facilitationBase ::= "fcb" = base.}}}
+    *
     * @return A [[Parser]] holding the facilitation base
     */
   def facilitationBase: Parser[(String, Double)] = FACILITATION_BASE.name ~ "=" ~ number ^^ {
@@ -362,6 +400,7 @@ class DnaParser extends RegexParsers {
   /**
     * The facilitation magnitude
     * {{{facilitationMagnitude ::= "fcm" = magnitude.}}}
+    *
     * @return A [[Parser]] holding the facilitation magnitude
     */
   def facilitationMagnitude: Parser[(String, Double)] = FACILITATION_MAGNITUDE.name ~ "=" ~ number ^^ {
@@ -371,6 +410,7 @@ class DnaParser extends RegexParsers {
   /**
     * The facilitation time-constant
     * {{{facilitationTimeConstant ::= "fct" = timeConstant.}}}
+    *
     * @return A [[Parser]] holding the facilitation time-constant
     */
   def facilitationTimeConstant: Parser[(String, Time)] = FACILITATION_TIME_CONSTANT.name ~ "=" ~ (dimensionedNumber | number) ^^ {
@@ -380,6 +420,7 @@ class DnaParser extends RegexParsers {
   /**
     * The depletion base
     * {{{depletionBase ::= "dpb" = base.}}}
+    *
     * @return A [[Parser]] holding the depletion base
     */
   def depletionBase: Parser[(String, Double)] = DEPLETION_BASE.name ~ "=" ~ number ^^ {
@@ -389,6 +430,7 @@ class DnaParser extends RegexParsers {
   /**
     * The depletion magnitude
     * {{{depletionMagnitude ::= "dpm" = magnitude.}}}
+    *
     * @return A [[Parser]] holding the depletion magnitude
     */
   def depletionMagnitude: Parser[(String, Double)] = DEPLETION_MAGNITUDE.name ~ "=" ~ number ^^ {
@@ -398,6 +440,7 @@ class DnaParser extends RegexParsers {
   /**
     * The depletion time-constant
     * {{{depletionTimeConstant ::= "dpt" = timeConstant.}}}
+    *
     * @return A [[Parser]] holding the depletion time-constant
     */
   def depletionTimeConstant: Parser[(String, Time)] = DEPLETION_TIME_CONSTANT.name ~ "=" ~ (dimensionedNumber | number) ^^ {
@@ -408,6 +451,7 @@ class DnaParser extends RegexParsers {
     * Valid parameters describing the synapse timing function
     * {{{synapseTimingParam ::= facilitationBase | facilitationMagnitude | facilitationTimeConstant |
     *     depletionBase | depletionMagnitude | depletionTimeConstant.}}}
+    *
     * @return valid parameters describing the synapse timing function
     */
   def synapseTimingParam: Parser[(String, Any)] =
@@ -417,6 +461,7 @@ class DnaParser extends RegexParsers {
   /**
     * The synapse timing function description
     * {{{synapseTime ::= "(" synapseTimingParam \{ "," synapseTimingParam \} ")"}}}
+    *
     * @return a [[Parser]] holding the synapse timing functoin description
     */
   def synapseTiming: Parser[SignalReleaseProbabilityDescription] = "(" ~> repsep(synapseTimingParam, ",") <~ ")" ^^
@@ -429,6 +474,7 @@ class DnaParser extends RegexParsers {
   /**
     * The weight limiter type
     * {{{weightLimitType ::= "bnd" | "unb". }}}
+    *
     * @return A [[Parser]] holding the weight limiter type function name
     */
   def weightLimitType: Parser[String] = BOUNDED.name | UNBOUNDED.name
@@ -436,6 +482,7 @@ class DnaParser extends RegexParsers {
   /**
     * The weight limiter function
     * {{{weightLimitFunction ::= "fnc" = weightLimitType.}}}
+    *
     * @return A [[Parser]] holding a pair describing the weight limiter function name ("fnc", weightLimitTpe)
     */
   def weightLimitFunction: Parser[(String, String)] = LIMITER_TYPE.name ~ "=" ~ weightLimitType ^^ {
@@ -445,6 +492,7 @@ class DnaParser extends RegexParsers {
   /**
     * The connection weight's lower bound (i.e. the smallest value it can take)
     * {{{weightLimitLowerBound ::= "lwb" = number.}}}
+    *
     * @return A [[Parser]] holding the weight's lower bound
     */
   def weightLimitLowerBound: Parser[(String, Double)] = LOWER_BOUND.name ~ "=" ~ number ^^ {
@@ -454,6 +502,7 @@ class DnaParser extends RegexParsers {
   /**
     * The connection weight's upper bound (i.e. the largest value it can take)
     * {{{weightLimitUpperBound ::= "upb" = number.}}}
+    *
     * @return A [[Parser]] holding the weight's upper bound
     */
   def weightLimitUpperBound: Parser[(String, Double)] = UPPER_BOUND.name ~ "=" ~ number ^^ {
@@ -463,6 +512,7 @@ class DnaParser extends RegexParsers {
   /**
     * The valid parameters describing weight limit functions
     * {{{weightLimitParam ::= weightLimitFunction | weightLimitLowerBound | weightLimitUpperBound.}}}
+    *
     * @return A [[Parser]] holding a list of weight limiter function parameters
     */
   def weightLimitParam: Parser[(String, Any)] = weightLimitFunction | weightLimitLowerBound | weightLimitUpperBound
@@ -470,6 +520,7 @@ class DnaParser extends RegexParsers {
   /**
     * The weight limiter function description
     * {{{weightLimit ::= "(" weightLimitParam \{ "," weightLimitParam \} ")"}}}
+    *
     * @return A [[Parser]] holding the weight limiter function description
     */
   def weightLimit: Parser[WeightLimitDescription] = "(" ~> repsep(weightLimitParam, ",") <~ ")" ^^
@@ -482,6 +533,7 @@ class DnaParser extends RegexParsers {
   /**
     * Valid weight decay function types
     * {{{weightDecayType ::= "exp" | "zer".}}}
+    *
     * @return A [[Parser]] holding the weight decay function type
     */
   def weightDecayType: Parser[String] = EXPONENTIAL.name | ZERO.name
@@ -489,6 +541,7 @@ class DnaParser extends RegexParsers {
   /**
     * The weight-decay function type key-value pair
     * {{{weightDecayFunction ::= "fnc" = weightDecayType.}}}
+    *
     * @return A [[Parser]] holding the weight decay function type pair (i.e. ("fnc", weightDecayType))
     */
   def weightDecayFunction: Parser[(String, String)] = DECAY_TYPE.name ~ "=" ~ weightDecayType ^^ {
@@ -498,6 +551,7 @@ class DnaParser extends RegexParsers {
   /**
     * The weight decay half-life needed for the exponential weight decay
     * {{{weightDecayHalfLife ::= "dhl" = dimensionedValue | number.}}}
+    *
     * @return A [[Parser]] holding the weight decay function half-life for exponential decay
     */
   def weightDecayHalfLife: Parser[(String, Time)] = DECAY_HALF_LIFE.name ~ "=" ~ (dimensionedNumber | number) ^^ {
@@ -507,6 +561,7 @@ class DnaParser extends RegexParsers {
   /**
     * Valid weight decay parameter
     * {{{weightDecayParam ::= weightDecayFunction | weightDecayHalfLife. }}}
+    *
     * @return A [[Parser]] holding a valid weight decay parameter
     */
   def weightDecayParam: Parser[(String, Any)] = weightDecayFunction | weightDecayHalfLife
@@ -514,6 +569,7 @@ class DnaParser extends RegexParsers {
   /**
     * The weight-decay function description
     * {{{weightDecay ::= "(" weightDecayParam \{ "," weightDecayParam \} ")".}}}
+    *
     * @return A [[Parser]] holding the weight decay function description
     */
   def weightDecay: Parser[WeightDecayDescription] = "(" ~> repsep(weightDecayParam, ",") <~ ")" ^^
@@ -527,6 +583,7 @@ class DnaParser extends RegexParsers {
   /**
     * Pre-synaptic neuron identified by an ID, which could be an individual number or a set of numbers
     * {{{preSynapticNeuron ::= "prn" = idSet | id.}}}
+    *
     * @return a [[Parser]] holding the pair, `("prn", set(neuron ID))`
     */
   def preSynapticNeuron: Parser[(String, Set[String])] = PRE_SYNAPTIC_NEURON.name ~ "=" ~ (idSet | id) ^^ {
@@ -536,6 +593,7 @@ class DnaParser extends RegexParsers {
   /**
     * Post-synaptic neuron identified by an ID, which could be an individual number or a set of numbers
     * {{{preSynapticNeuron ::= "psn" = idSet | id.}}}
+    *
     * @return a [[Parser]] holding the pair, `("psn", set(neuron ID))`
     */
   def postSynapticNeuron: Parser[(String, Set[String])] = POST_SYNAPTIC_NEURON.name ~ "=" ~ (idSet | id) ^^ {
@@ -545,6 +603,7 @@ class DnaParser extends RegexParsers {
   /**
     * The initial connection weight when the neuron is constructed.
     * {{{initialConnectionWeight ::= "cnw" = number.}}}
+    *
     * @return A [[Parser]] holding the pair, `("cnw", number)`
     */
   def initialConnectionWeight: Parser[(String, Double)] = INITIAL_CONNECTION_WEIGHT.name ~ "=" ~ number ^^ {
@@ -554,6 +613,7 @@ class DnaParser extends RegexParsers {
   /**
     * The initial connection weight, drawn from a random number
     * {{{randomConnectionWeight ::= "cnw" = r random}}}
+    *
     * @return A [[Parser]] holding the pair, `("cnw", number)` where the number is random
     */
   def randomConnectionWeight: Parser[(String, Double)] = INITIAL_CONNECTION_WEIGHT.name ~ "=" ~ random ^^ {
@@ -563,6 +623,7 @@ class DnaParser extends RegexParsers {
   /**
     * The equilibrium connection weight when the neuron is constructed, which is the value to which the weight decays.
     * {{{equilibriumConnectionWeight ::= "eqw" = number.}}}
+    *
     * @return A [[Parser]] holding the pair, `("eqw", number)`
     */
   def equilibriumConnectionWeight: Parser[(String, Double)] = EQUILIBRIUM_CONNECTION_WEIGHT.name ~ "=" ~ number ^^ {
@@ -572,6 +633,7 @@ class DnaParser extends RegexParsers {
   /**
     * The equilibrium connection weight, drawn from a random number
     * {{{equilibriumRandomConnectionWeight ::= "eqw" = r random}}}
+    *
     * @return A [[Parser]] holding the pair, `("eqw", number)` where the number is random
     */
   def equilibriumRandomConnectionWeight: Parser[(String, Double)] = EQUILIBRIUM_CONNECTION_WEIGHT.name ~ "=" ~ random ^^ {
@@ -581,6 +643,7 @@ class DnaParser extends RegexParsers {
   /**
     * The learning function name (which must match a specified learning function)
     * {{{connectionLearning ::= "lrn" = id.}}}
+    *
     * @return A [[Parser]] holding the pair, `("lrn", name)`
     */
   def connectionLearning: Parser[(String, String)] = LEARNING_FUNCTION_NAME.name ~ "=" ~ id ^^ {
@@ -599,6 +662,7 @@ class DnaParser extends RegexParsers {
     *   connectionLearning |
     *   connectionStickiness
     * }}}
+    *
     * @return A [[Parser]] holding a pair where the 1^st^ parameter is the connection-paramater name, and the 2^nd^
     *         parameter is the value of that connection parameter.
     */
@@ -612,6 +676,7 @@ class DnaParser extends RegexParsers {
     * line that matches here could translate into a list of more than one connections. And becuase of that, this returns
     * a list of [[ConnectionDescription]] instances.
     * {{{connection ::= "(" connectionParameter \{ "," connectionParameter \} ")".}}}
+    *
     * @return A [[Parser]] holding a list of [[ConnectionDescription]] instances
     */
   def connection: Parser[List[Either[String, ConnectionDescription]]] = "(" ~> repsep(connectionParameter, ",") <~ ")" ^^
@@ -621,6 +686,7 @@ class DnaParser extends RegexParsers {
     * A list of connections. Unlike the [[connection]] this is a flattened list of the output from all the lines that
     * match that [[connection]]. This is the final connection list.
     * {{{connections ::= "[" connection \{ "," connection \} "]".}}}
+    *
     * @return A [[Parser]] holding the list of [[ConnectionDescription]] instance collected from the [[connection]] method
     */
   def connections: Parser[List[Either[String, ConnectionDescription]]] = "[" ~> repsep(connection, ",") <~ "]" ^^
@@ -635,6 +701,7 @@ class DnaParser extends RegexParsers {
   /**
     * The group ID
     * {{{groupId ::= "gid" = id.}}}
+    *
     * @return A [[Parser]] holding the group ID
     */
   def groupId: Parser[(String, String)] = GROUP_ID.name ~ "=" ~ id ^^ {
@@ -644,6 +711,7 @@ class DnaParser extends RegexParsers {
   /**
     * The host (IP or hostname) on which the neuron group executes
     * {{{host ::= "hst" = host.}}}
+    *
     * @return A [[Parser]] holding the host key-value pair
     */
   def groupHost: Parser[(String, String)] = HOST.name ~ "=" ~ host ^^ {
@@ -653,6 +721,7 @@ class DnaParser extends RegexParsers {
   /**
     * The port on which akka listens of the specified host
     * {{{port ::= "prt" = port.}}}
+    *
     * @return A [[Parser]] holding the port key-value pair
     */
   def groupPort: Parser[(String, Int)] = PORT.name ~ "=" ~ integer ^^ {
@@ -662,6 +731,7 @@ class DnaParser extends RegexParsers {
   /**
     * A valid group parameter
     * {{{groupParam ::= groupId | groupHost | groupPort.}}}
+    *
     * @return A [[Parser]] holding the group parameter as a key-value pair
     */
   def groupParam: Parser[(String, Any)] = groupId | groupHost | groupPort
@@ -669,6 +739,7 @@ class DnaParser extends RegexParsers {
   /**
     * The group description
     * {{{group ::= "(" groupParam \{ "," groupParam \} ")".}}}
+    *
     * @return A [[Parser]] holding either the (groupId, groupDescription) pair, or a failure message
     */
   def group: Parser[Either[String, (String, GroupDescription)]] = "(" ~> repsep(groupParam, ",") <~ ")" ^^
@@ -682,6 +753,7 @@ class DnaParser extends RegexParsers {
   /**
     * The neuron ID
     * {{{neuronId ::= "nid" = id}}}
+    *
     * @return A [[Parser]] holding the neuron ID
     */
   def neuronId: Parser[(String, String)] = NEURON_ID.name ~ "=" ~ id ^^ {
@@ -691,6 +763,7 @@ class DnaParser extends RegexParsers {
   /**
     * The ID of the group to which the neuron belongs
     * {{{neuronGroup ::= "grp" = id}}}
+    *
     * @return A [[Parser]] holding the neuron ID
     */
   def neuronGroup: Parser[(String, String)] = NEURON_GROUP.name ~ "=" ~ id ^^ {
@@ -700,6 +773,7 @@ class DnaParser extends RegexParsers {
   /**
     * Valid neuron types
     * {{{neuronTypeParam ::= "mi" | "bi".}}}
+    *
     * @return A [[Parser]] holding the neuron type
     */
   def neuronTypeParam: Parser[String] = MONOSTABLE_INTEGRATOR.name | BISTABLE_INTEGRATOR.name
@@ -707,6 +781,7 @@ class DnaParser extends RegexParsers {
   /**
     * The neuron type key-value pair
     * {{{neuronType ::= "nty" = neuronTypeParam.}}}
+    *
     * @return A [[Parser]] holding the neuron type key-value pair
     */
   def neuronType: Parser[(String, String)] = NEURON_TYPE.name ~ "=" ~ neuronTypeParam ^^ {
@@ -716,6 +791,7 @@ class DnaParser extends RegexParsers {
   /**
     * The flag specifying whether or not this neuron is an inhibition neuron
     * {{{inhibitionNeuron ::= "inh" = boolean.}}}
+    *
     * @return A [[Parser]] holding the inhibition-neuron flag key-value pair
     */
   def inhibitionNeuron: Parser[(String, Boolean)] = INHIBITION.name ~ "=" ~ boolean ^^ {
@@ -725,6 +801,7 @@ class DnaParser extends RegexParsers {
   /**
     * The neuron's refractory period
     * {{{refractoryPeriod ::= "rfp" = dimensionedValue | number.}}}
+    *
     * @return A [[Parser]] holding the neuron refractory period
     */
   def refractoryPeriod: Parser[(String, Time)] = REFRACTORY_PERIOD.name ~ "=" ~ (dimensionedNumber | number) ^^ {
@@ -734,6 +811,7 @@ class DnaParser extends RegexParsers {
   /**
     * The neuron's base refractoriness
     * {{{baseRefractoriness ::= "rfb" = dimensionedValue | number.}}}
+    *
     * @return A [[Parser]] holding the neuron refractory period
     */
   def baseRefractoriness: Parser[(String, MagneticFlux)] = BASE_REFRACTORINESS.name ~ "=" ~ (dimensionedNumber | number) ^^ {
@@ -753,6 +831,7 @@ class DnaParser extends RegexParsers {
   /**
     * The neuron's minimum allowed value for the membrane potential
     * {{{minimumMembranePotential ::= "mnp" = dimensionedValue | number.}}}
+    *
     * @return A [[Parser]] holding the neuron's minimum allowed membrane potential
     */
   def minimumMembranePotential: Parser[(String, ElectricPotential)] = MIN_MEMBRANE_POTENTIAL.name ~ "=" ~ (dimensionedNumber | number) ^^ {
@@ -762,6 +841,7 @@ class DnaParser extends RegexParsers {
   /**
     * The neuron's membrane potential decay
     * {{{membranePotentialDecay ::= "mpd" = dimensionedValue | number.}}}
+    *
     * @return A [[Parser]] holding the neuron's membrane potential decay
     */
   def membranePotentialDecay: Parser[(String, Time)] = MEMBRANE_POTENTIAL_DECAY.name ~ "=" ~ (dimensionedNumber | number) ^^ {
@@ -771,6 +851,7 @@ class DnaParser extends RegexParsers {
   /**
     * The neuron's membrane potential rise
     * {{{membranePotentialRise ::= "mpr" = dimensionedValue | number.}}}
+    *
     * @return A [[Parser]] holding the neuron's membrane potential decay
     */
   def membranePotentialRise: Parser[(String, Time)] = MEMBRANE_POTENTIAL_RISE.name ~ "=" ~ (dimensionedNumber | number) ^^ {
@@ -780,6 +861,7 @@ class DnaParser extends RegexParsers {
   /**
     * The magnitude of the neuron's membrane potential noise
     * {{{membranePotentialNoise ::= "mpn" = dimensionedValue | number.}}}
+    *
     * @return A [[Parser]] holding the magnitude of the neuron's membrane potential noise
     */
   def membranePotentialNoise: Parser[(String, ElectricPotential)] = MEMBRANE_POTENTIAL_NOISE.name ~ "=" ~ (dimensionedNumber | number) ^^ {
@@ -789,6 +871,7 @@ class DnaParser extends RegexParsers {
   /**
     * The neuron's spike potential
     * {{{membraneSpikePotential ::= "spp" = dimensionedValue | number.}}}
+    *
     * @return A [[Parser]] holding the neuron's spike potential
     */
   def membraneSpikePotential: Parser[(String, ElectricPotential)] = SPIKE_POTENTIAL.name ~ "=" ~ (dimensionedNumber | number) ^^ {
@@ -798,6 +881,7 @@ class DnaParser extends RegexParsers {
   /**
     * The neuron's signal conductance speed
     * {{{signalConductanceSpeed ::= "csp" = dimensionedValue | number.}}}
+    *
     * @return A [[Parser]] holding the neuron's signal conductance speed
     */
   def signalConductanceSpeed: Parser[(String, Velocity)] = CONDUCTANCE_SPEED.name ~ "=" ~ (dimensionedNumber | number) ^^ {
@@ -807,6 +891,7 @@ class DnaParser extends RegexParsers {
   /**
     * The connection weight-noise magnitude for the Wiener process describing the noise
     * {{{weightNoiseMagnitude ::= "wnm" = number.}}}
+    *
     * @return A [[Parser]] holding the weight noise magnitude
     */
   def weightNoiseMagnitude: Parser[(String, Double)] = WEIGHT_NOISE.name ~ "=" ~ number ^^ {
@@ -816,6 +901,7 @@ class DnaParser extends RegexParsers {
   /**
     * The intrinsic plasticity base value
     * {{{intrinsicPlasticityBase ::= "ipb" = dimensionedNumber | number.}}}
+    *
     * @return A [[Parser]] holding the intrinsic plasticity base
     */
   def intrinsicPlasticityBase: Parser[(String, ElectricPotential)] = INTRINSIC_PLASTICITY_BASE.name ~ "=" ~ (dimensionedNumber | number) ^^ {
@@ -825,6 +911,7 @@ class DnaParser extends RegexParsers {
   /**
     * The intrinsic plasticity learning amount per unit time
     * {{{intrinsicPlasticityLearning ::= "ipl" = dimensionedNumber | number.}}}
+    *
     * @return A [[Parser]] holding the intrinsic plasticity learning amount per unit time
     */
   def intrinsicPlasticityLearning: Parser[(String, ElectricPotential)] = INTRINSIC_PLASTICITY_LEARNING_RATE.name ~ "=" ~ (dimensionedNumber | number) ^^ {
@@ -834,6 +921,7 @@ class DnaParser extends RegexParsers {
   /**
     * The intrinsic plasticity decay half-life
     * {{{intrinsicPlasticityDecayHalfLife ::= diminsionedNumber | number.}}}
+    *
     * @return A [[Parser]] holding the intrinsic plasticity decay half-life
     */
   def intrinsicPlasticityDecayHalfLife: Parser[(String, Time)] = INTRINSIC_PLASTICITY_DECAY_HALF_LIFE.name ~ "=" ~ (dimensionedNumber | number) ^^ {
@@ -843,6 +931,7 @@ class DnaParser extends RegexParsers {
   /**
     * The neuron's weight decay function
     * {{{neuronWeightDecay ::= "WDF" = weightDecay.}}}
+    *
     * @return A [[Parser]] holding the neuron's [[WeightDecayDescription]]
     */
   def neuronWeightDecay: Parser[(String, WeightDecayDescription)] = WEIGHT_DECAY_FUNCTION.name ~ "=" ~ weightDecay ^^ {
@@ -862,6 +951,7 @@ class DnaParser extends RegexParsers {
   /**
     * The neuron's weight decay function
     * {{{neuronWeightDecay ::= "WLF" = neuronWeightLimiter.}}}
+    *
     * @return A [[Parser]] holding the neuron's [[WeightLimitDescription]]
     */
   def neuronWeightLimiter: Parser[(String, WeightLimitDescription)] = WEIGHT_LIMITER_FUNCTION.name ~ "=" ~ weightLimit ^^ {
@@ -871,6 +961,7 @@ class DnaParser extends RegexParsers {
   /**
     * The neuron's locaton description
     * {{{neuronLocation ::= "LOC" = location.}}}
+    *
     * @return A [[Parser]] holding the neuron's [[LocationDescription]]
     */
   def neuronLocation: Parser[(String, LocationDescription)] = LOCATION.name ~ "=" ~ location ^^ {
@@ -881,6 +972,7 @@ class DnaParser extends RegexParsers {
   /**
     * The monostable integrator neuron's spike threshold
     * {{{membraneSpikeThreshold ::= "mst" = dimensionedValue | number.}}}
+    *
     * @return A [[Parser]] holding the neuron's spike threshold
     */
   def membraneSpikeThreshold: Parser[(String, ElectricPotential)] = SPIKE_THRESHOLD.name ~ "=" ~ (dimensionedNumber | number) ^^ {
@@ -899,6 +991,7 @@ class DnaParser extends RegexParsers {
     *   neuronWeightDecay | neuronWeightLimiter |
     *   neuronLocation
     * }}}
+    *
     * @return A [[Parser]] holding the monostable integrator neuron parameter
     */
   def monostableIntegratorParam: Parser[(String, Any)] = neuronId | neuronGroup | neuronType | membraneSpikeThreshold |
@@ -912,6 +1005,7 @@ class DnaParser extends RegexParsers {
   /**
     * The bistable integrator neuron's threshold to entering the tonic firing limit-cycle
     * {{{limitCycleThreshold ::= "lct" = dimensionedValue | number.}}}
+    *
     * @return A [[Parser]] holding the bistable integrator neuron's limit-cycle threshold
     */
   def limitCycleThreshold: Parser[(String, ElectricPotential)] = LIMIT_CYCLE_THRESHOLD.name ~ "=" ~ (dimensionedNumber | number) ^^ {
@@ -921,6 +1015,7 @@ class DnaParser extends RegexParsers {
   /**
     * The bistable integrator neuron's threshold to leaving the tonic firing limit-cycle and entering the resting state
     * {{{limitCycleThreshold ::= "lct" = dimensionedValue | number.}}}
+    *
     * @return A [[Parser]] holding the bistable integrator neuron's resting-state threshold
     */
   def restingStateThreshold: Parser[(String, ElectricPotential)] = RESTING_STATE_THRESHOLD.name ~ "=" ~ (dimensionedNumber | number) ^^ {
@@ -930,6 +1025,7 @@ class DnaParser extends RegexParsers {
   /**
     * The bistable integrator neuron's tonic firing rate when it is in the limit-cycle
     * {{{limitCycleThreshold ::= "tfr" = dimensionedValue | number.}}}
+    *
     * @return A [[Parser]] holding the bistable integrator neuron's tonic firing rate when it is in the limit-cycle
     */
   def tonicFireRate: Parser[(String, Frequency)] = TONIC_FIRE_RATE.name ~ "=" ~ (dimensionedNumber | number) ^^ {
@@ -948,6 +1044,7 @@ class DnaParser extends RegexParsers {
     *   neuronWeightDecay | neuronWeightLimiter |
     *   neuronLocation
     * }}}
+    *
     * @return A [[Parser]] holding the bistable integrator neuron parameter
     */
   def bistableIntegratorParam: Parser[(String, Any)] = neuronId | neuronGroup | neuronType | limitCycleThreshold | restingStateThreshold | tonicFireRate |
@@ -960,17 +1057,19 @@ class DnaParser extends RegexParsers {
   /**
     * The a monostable integrator neuron description
     * {{{neuron ::= "(" monostableIntegratorParam \{ "," monostableIntegratorParam \}. ")" }}}
+    *
     * @return A [[Parser]] holding the [[NeuronDescription]] or a string with the failure message
     */
-  def monostableIntegrator: Parser[Either[String, (String, NeuronDescription)]] = "(" ~> repsep( monostableIntegratorParam, "," ) <~ ")" ^^
+  def monostableIntegrator: Parser[Either[String, (String, NeuronDescription)]] = "(" ~> repsep(monostableIntegratorParam, ",") <~ ")" ^^
     (params => asNeuron(params.toMap))
 
   /**
     * The a bistable integrator neuron description
     * {{{neuron ::= "(" bistableIntegratorParam \{ "," bistableIntegratorParam \}. ")" }}}
+    *
     * @return A [[Parser]] holding the [[NeuronDescription]] or a string with the failure message
     */
-  def bistableIntegrator: Parser[Either[String, (String, NeuronDescription)]] = "(" ~> repsep( bistableIntegratorParam, "," ) <~ ")" ^^
+  def bistableIntegrator: Parser[Either[String, (String, NeuronDescription)]] = "(" ~> repsep(bistableIntegratorParam, ",") <~ ")" ^^
     (params => asNeuron(params.toMap))
 
   //
@@ -979,6 +1078,7 @@ class DnaParser extends RegexParsers {
   /**
     * Allowable coordinate system names (i.e. cartesian, cylindrical, spherical)
     * {{{coordinateName ::= "ct" | "cl" | "sp".}}}
+    *
     * @return A [[Parser]] holding the coordinate-system name
     */
   def coordinateName: Parser[String] = CARTESIAN.name | CYLINDRICAL.name | SPHERICAL.name
@@ -986,6 +1086,7 @@ class DnaParser extends RegexParsers {
   /**
     * A coordinate system key-value pair
     * {{{coordinateType ::= "cst" = name.}}}
+    *
     * @return A [[Parser]] holding the name of the coordinate system type (i.e. cartesian, cylindrical, spherical)
     */
   def coordinateType: Parser[String] = COORDINATE_TYPE.name ~ "=" ~ coordinateName ^^ {
@@ -997,6 +1098,7 @@ class DnaParser extends RegexParsers {
     * the coordinate is 1. As a further example, given a cartesian coordinate `(x, y, z)`, `px2` would refer to `y` and
     * would have a ''dimension'' of 2.
     * {{{project ::= "px1" | "px2" | "px3".}}}
+    *
     * @return A [[Parser]] holding the coordinate ''dimension''.
     */
   def projection: Parser[Int] = (PROJECTION_1.name | PROJECTION_2.name | PROJECTION_3.name) ^^
@@ -1005,6 +1107,7 @@ class DnaParser extends RegexParsers {
   /**
     * A coordinate can be with or without dimensions
     * {{{coordinateValue ::= dimensionedValue | integer | double}}}
+    *
     * @return A [[Parser]] holding the coordinate value as a string
     */
   def coordinateValue: Parser[String] = dimensionedNumber | double ^^ (_.toString) | integer ^^ (_.toString)
@@ -1013,6 +1116,7 @@ class DnaParser extends RegexParsers {
     * A pair holding the projection's dimension and the associated value. Note that the value is a ''dimensioned value'',
     * and therefore, is represented as a string. For example, the value may be `20 µm`.
     * {{{coordinate ::= projection = dimensionedValue.}}}
+    *
     * @return A [[Parser]] holding the coordinate
     */
   def coordinate: Parser[(Int, String)] = projection ~ "=" ~ coordinateValue ^^ {
@@ -1023,6 +1127,7 @@ class DnaParser extends RegexParsers {
     * A location must have a coordinate-system type (i.e. cartesian, cylindrical, spherical) and then three coordinates
     * (i.e. projection 1, 2, and 3)
     * {{{location ::= ( coordinateType, coordinate, coordinate, coordinate ).}}}
+    *
     * @return A [[Parser]] holding a [[LocationDescription]] object representing the coordinate type
     */
   def location: Parser[LocationDescription] = "(" ~> coordinateType ~ "," ~ coordinate ~ "," ~ coordinate ~ "," ~ coordinate <~ ")" ^^ {
@@ -1046,31 +1151,32 @@ class DnaParser extends RegexParsers {
     *   "NRN" | "nid" | "grp" | "nty" | "inh" | "rfp" | "mnp" | "mpd" | "mst" | "lct" | "rst" | "tfr" | "wnm" | "ipb" | "ipl" | "ipd" |
     *   "LOC" | "cst" | "px1" | "px2" | "px3"
     * }}}
+    *
     * @return A [[Parser]] holding the key
     */
   def key: Parser[String] =
-      LEARNING_FUNCTIONS.name |
-        LEARNING_TYPE.name | INHIBITION_AMPLITUDE.name | INHIBITION_PERIOD.name | EXCITATION_AMPLITUDE.name | EXCITATION_PERIOD.name |
+    LEARNING_FUNCTIONS.name |
+      LEARNING_TYPE.name | INHIBITION_AMPLITUDE.name | INHIBITION_PERIOD.name | EXCITATION_AMPLITUDE.name | EXCITATION_PERIOD.name |
       WEIGHT_LIMITER_FUNCTION.name |
-        LIMITER_TYPE.name | LOWER_BOUND.name | UPPER_BOUND.name |
+      LIMITER_TYPE.name | LOWER_BOUND.name | UPPER_BOUND.name |
       WEIGHT_DECAY_FUNCTION.name |
-        DECAY_TYPE.name | DECAY_HALF_LIFE.name |
+      DECAY_TYPE.name | DECAY_HALF_LIFE.name |
       SIGNAL_RELEASE_PROBABILITY.name |
-        FACILITATION_BASE.name | FACILITATION_MAGNITUDE.name | FACILITATION_TIME_CONSTANT.name |
-        DEPLETION_BASE.name | DEPLETION_MAGNITUDE.name | DEPLETION_TIME_CONSTANT.name |
+      FACILITATION_BASE.name | FACILITATION_MAGNITUDE.name | FACILITATION_TIME_CONSTANT.name |
+      DEPLETION_BASE.name | DEPLETION_MAGNITUDE.name | DEPLETION_TIME_CONSTANT.name |
       CONNECTIONS.name |
-        PRE_SYNAPTIC_NEURON.name | POST_SYNAPTIC_NEURON.name | INITIAL_CONNECTION_WEIGHT.name | EQUILIBRIUM_CONNECTION_WEIGHT.name | LEARNING_FUNCTION_NAME.name |
+      PRE_SYNAPTIC_NEURON.name | POST_SYNAPTIC_NEURON.name | INITIAL_CONNECTION_WEIGHT.name | EQUILIBRIUM_CONNECTION_WEIGHT.name | LEARNING_FUNCTION_NAME.name |
       GROUPS.name |
-        GROUP_ID.name | HOST.name | PORT.name |
+      GROUP_ID.name | HOST.name | PORT.name |
       NEURONS.name |
-        NEURON_ID.name | NEURON_GROUP.name | NEURON_TYPE.name | INHIBITION.name | REFRACTORY_PERIOD.name | MIN_MEMBRANE_POTENTIAL.name | MEMBRANE_POTENTIAL_DECAY.name |
-        SPIKE_POTENTIAL.name | CONDUCTANCE_SPEED.name | WEIGHT_DECAY_FUNCTION.name | WEIGHT_LIMITER_FUNCTION.name | LOCATION.name |
-        SPIKE_THRESHOLD.name |
-        LIMIT_CYCLE_THRESHOLD.name | RESTING_STATE_THRESHOLD.name | TONIC_FIRE_RATE.name |
-        WEIGHT_NOISE.name |
-        INTRINSIC_PLASTICITY_BASE.name | INTRINSIC_PLASTICITY_LEARNING_RATE.name | INTRINSIC_PLASTICITY_DECAY_HALF_LIFE.name |
+      NEURON_ID.name | NEURON_GROUP.name | NEURON_TYPE.name | INHIBITION.name | REFRACTORY_PERIOD.name | MIN_MEMBRANE_POTENTIAL.name | MEMBRANE_POTENTIAL_DECAY.name |
+      SPIKE_POTENTIAL.name | CONDUCTANCE_SPEED.name | WEIGHT_DECAY_FUNCTION.name | WEIGHT_LIMITER_FUNCTION.name | LOCATION.name |
+      SPIKE_THRESHOLD.name |
+      LIMIT_CYCLE_THRESHOLD.name | RESTING_STATE_THRESHOLD.name | TONIC_FIRE_RATE.name |
+      WEIGHT_NOISE.name |
+      INTRINSIC_PLASTICITY_BASE.name | INTRINSIC_PLASTICITY_LEARNING_RATE.name | INTRINSIC_PLASTICITY_DECAY_HALF_LIFE.name |
       LOCATION.name |
-        COORDINATE_TYPE.name | PROJECTION_1.name | PROJECTION_2.name | PROJECTION_3.name
+      COORDINATE_TYPE.name | PROJECTION_1.name | PROJECTION_2.name | PROJECTION_3.name
 
   /**
     * The value can be a description, or an integer or floating-point number, and a string
@@ -1080,7 +1186,7 @@ class DnaParser extends RegexParsers {
     */
   def value: Parser[Any] =
     monostableIntegrator | bistableIntegrator |
-//      learning |
+      //      learning |
       stdpHardLearning | stdpSoftLearning | stdpAlphaLearning | noLearning |
       weightLimit |
       weightDecay |
@@ -1107,27 +1213,32 @@ class DnaParser extends RegexParsers {
   /**
     * Dimensions must be 1 to 4 characters long, and can be unicode characters
     * {{{dimension ::= regex([a-zA-Z\p{L}\p{M}]{1,4})}}}
+    *
     * @return A [[String]]
     */
-  def dimension: Parser[String] = """[a-zA-Z\p{L}\p{M}/]{1,4}""".r
+  def dimension: Parser[String] =
+    """[a-zA-Z\p{L}\p{M}/]{1,4}""".r
 
   /**
     * A floating point value with an attached dimension
     * {{{dimensionedDouble ::= double dimension}}}
+    *
     * @return A [[String]] representing the double with the attached dimension
     */
-  def dimensionedDouble: Parser[String] = double~dimension ^^ (tuple => s"${tuple._1.toDouble} ${tuple._2.toString}")
+  def dimensionedDouble: Parser[String] = double ~ dimension ^^ (tuple => s"${tuple._1.toDouble} ${tuple._2.toString}")
 
   /**
     * An integer value with an attached dimension
     * {{{dimensionedInt ::= integer dimension}}}
+    *
     * @return A string representing the integer with the attached dimension
     */
-  def dimensionedInt: Parser[String] = integer~dimension ^^ (tuple => s"${tuple._1.toInt} ${tuple._2.toString}")
+  def dimensionedInt: Parser[String] = integer ~ dimension ^^ (tuple => s"${tuple._1.toInt} ${tuple._2.toString}")
 
   /**
     * A value with an attached dimension
     * {{{dimensionedValue ::= dimensionedDouble | dimensionedInt}}}
+    *
     * @return A [[String]] representing the dimensioned value
     */
   def dimensionedNumber: Parser[String] = dimensionedDouble | dimensionedInt
@@ -1139,9 +1250,10 @@ class DnaParser extends RegexParsers {
     * A uniform random number between the start and end, expressed as `rstart:end`. For example, r0.1:2.2 would
     * return a random number in the interval [0.1, 2.2]
     * {{{random ::= r double ":" double}}}
+    *
     * @return A random number in the specified interval [start, end]
     */
-  def random: Parser[Double] = "r"~number~":"~number ^^ {
+  def random: Parser[Double] = "r" ~ number ~ ":" ~ number ^^ {
     case "r" ~ start ~ ":" ~ end => start + math.random() * (end - start)
   }
 
@@ -1151,13 +1263,14 @@ class DnaParser extends RegexParsers {
     *
     * @return A [[Set]] of [[Int]] expanded form the range
     */
-  def range: Parser[Set[Int]] = integer~":"~integer~":"~integer ^^ {
+  def range: Parser[Set[Int]] = integer ~ ":" ~ integer ~ ":" ~ integer ^^ {
     case start ~ ":" ~ end ~ ":" ~ interval => (start to end by interval).toSet
   }
 
   /**
     * A number that is either a double or an integer, returned as a double
     * {{{number ::= double | integer.}}}
+    *
     * @return A [[Parser]] holding a double value
     */
   def number: Parser[Double] = double | integer ^^ (_.toDouble)
@@ -1168,7 +1281,8 @@ class DnaParser extends RegexParsers {
     *
     * @return An integer
     */
-  def integer: Parser[Int] = """([+-]?\d+){1}([eE]{1}[+]?\d+)?""".r ^^ (_.toInt)
+  def integer: Parser[Int] =
+    """([+-]?\d+){1}([eE]{1}[+]?\d+)?""".r ^^ (_.toInt)
 
   /**
     * A double represented as a floating point or in scientific notation
@@ -1178,19 +1292,22 @@ class DnaParser extends RegexParsers {
     *
     * @return a double
     */
-  def double: Parser[Double] = """([+-]?\d*\.\d*){1}([eE]{1}[+-]?\d+)?|([+-]?\d*){1}([eE]{1}[-]?\d+)""".r ^^ (_.toDouble)
+  def double: Parser[Double] =
+    """([+-]?\d*\.\d*){1}([eE]{1}[+-]?\d+)?|([+-]?\d*){1}([eE]{1}[-]?\d+)""".r ^^ (_.toDouble)
 
   /**
     * A boolean
     * {{{boolean ::= regex(f|false|t|true)}}}
+    *
     * @return a boolean
     */
-  def boolean: Parser[Boolean] = """f|false|t|true""".r ^^ {
-    case "f" => false
-    case "false" => false
-    case "t" => true
-    case "true" => true
-  }
+  def boolean: Parser[Boolean] =
+    """f|false|t|true""".r ^^ {
+      case "f" => false
+      case "false" => false
+      case "t" => true
+      case "true" => true
+    }
 
   //
   // ooo===------< ID >------===ooo
@@ -1202,12 +1319,14 @@ class DnaParser extends RegexParsers {
     *
     * @return A [[String]] representing the ID
     */
-  def id: Parser[String] = """[a-zA-Z0-9]+[\-_]*[a-zA-Z0-9]*""".r
+  def id: Parser[String] =
+    """[a-zA-Z0-9]+[\-_]*[a-zA-Z0-9]*""".r
 
   //
   // ooo===------< NETWORK ADDRESS >------===ooo
   //
-  def host: Parser[String] = """((\d{1,3}\.){3}\d{1,3})|([0-9a-fA-F:]+)|([a-zA-Z\-_\.]+)""".r
+  def host: Parser[String] =
+    """((\d{1,3}\.){3}\d{1,3})|([0-9a-fA-F:]+)|([a-zA-Z\-_\.]+)""".r
 
 }
 
@@ -1215,10 +1334,11 @@ object DnaParser {
 
   /**
     * Construct a [[LocationDescription]] based on the specified coordinate system type and the tuple of projections
+    *
     * @param coordinateType The coordinate system type (i.e. cartesian, cylindrical, spherical)
-    * @param px1 The first projection (in cartesian this would be `x`, in cylindrical this would be `r`)
-    * @param px2 The second projection (in cartesian this would be `y`, in cylindrical this would be `φ`)
-    * @param px3 The third projection (in cartesian this would be `z`, in cylindrical this would be `z`)
+    * @param px1            The first projection (in cartesian this would be `x`, in cylindrical this would be `r`)
+    * @param px2            The second projection (in cartesian this would be `y`, in cylindrical this would be `φ`)
+    * @param px3            The third projection (in cartesian this would be `z`, in cylindrical this would be `z`)
     * @return The [[LocationDescription]] describing the location
     */
   private def asLocation(coordinateType: String, px1: (Int, String), px2: (Int, String), px3: (Int, String)) = {
@@ -1245,7 +1365,7 @@ object DnaParser {
     new LocationDescription(coordinateType = coordinateType, point = point)
   }
 
-    /**
+  /**
     * Constructs the [[WeightDecayDescription]] from the map generated by the parser
     *
     * @param weightDecay The [[Map]] holding the key-value pairs describing the weight-decay function
@@ -1308,8 +1428,8 @@ object DnaParser {
     */
   private def asLearningFunction(learningType: Symbol, stdp: Map[String, Any]): Either[String, (String, LearningFunctionDescription)] = {
     try {
-//      val learningFunctionName = stdp(LEARNING_TYPE.name).toString
-//      val learningParams = learningFunctionName match {
+      //      val learningFunctionName = stdp(LEARNING_TYPE.name).toString
+      //      val learningParams = learningFunctionName match {
       val learningParams = learningType match {
         case STDP_HARD =>
           StdpHardLimitLearningParams(
@@ -1337,7 +1457,7 @@ object DnaParser {
         case NO_LEARNING => NoLearningParams()
       }
       Right((learningType.name, new LearningFunctionDescription(learningParams)))
-//      Right((learningFunctionName, new LearningFunctionDescription(learningParams)))
+      //      Right((learningFunctionName, new LearningFunctionDescription(learningParams)))
     } catch {
       case e: NoSuchElementException => Left(s"learning function parameter missing; ${e.getMessage}; $stdp")
     }
@@ -1375,7 +1495,7 @@ object DnaParser {
         intrinsicPlasticityDecayHalfLife = params(INTRINSIC_PLASTICITY_DECAY_HALF_LIFE.name).asInstanceOf[Time]
       )
 
-    Right((neuronId, description))
+      Right((neuronId, description))
 
     } catch {
       case e: NoSuchElementException => Left(s"neuron parameter missing; ${e.getMessage}; $params")
@@ -1384,6 +1504,7 @@ object DnaParser {
 
   /**
     * Pulls the neuron-specified parameters from the params
+    *
     * @param params The parsed parameters
     * @return A [[NeuronSpecificParams]] instance
     */
@@ -1402,21 +1523,22 @@ object DnaParser {
 
   /**
     * Constructs a list of the connections for the network
+    *
     * @param params The parameters describing the connections in the network
     * @return A [[List]] of [[ConnectionDescription]] instances
     */
   private def asConnection(params: Map[String, Any]): List[Either[String, ConnectionDescription]] = {
     try {
-        params(PRE_SYNAPTIC_NEURON.name).asInstanceOf[Set[String]]
-          .flatMap(preSyn => params(POST_SYNAPTIC_NEURON.name).asInstanceOf[Set[String]]
-            .map(postSyn => new ConnectionDescription(
-              preSynapticNeuronId = preSyn,
-              postSynapticNeuronId = postSyn,
-              initialWeight = params(INITIAL_CONNECTION_WEIGHT.name).toString.toDouble,
-              equilibriumWeight = params.getOrElse(EQUILIBRIUM_CONNECTION_WEIGHT.name, params(INITIAL_CONNECTION_WEIGHT.name)).toString.toDouble,
-              learningFunctionName = params(LEARNING_FUNCTION_NAME.name).toString
-            )).toList
-          ).toList.map(description => Right(description))
+      params(PRE_SYNAPTIC_NEURON.name).asInstanceOf[Set[String]]
+        .flatMap(preSyn => params(POST_SYNAPTIC_NEURON.name).asInstanceOf[Set[String]]
+          .map(postSyn => new ConnectionDescription(
+            preSynapticNeuronId = preSyn,
+            postSynapticNeuronId = postSyn,
+            initialWeight = params(INITIAL_CONNECTION_WEIGHT.name).toString.toDouble,
+            equilibriumWeight = params.getOrElse(EQUILIBRIUM_CONNECTION_WEIGHT.name, params(INITIAL_CONNECTION_WEIGHT.name)).toString.toDouble,
+            learningFunctionName = params(LEARNING_FUNCTION_NAME.name).toString
+          )).toList
+        ).toList.map(description => Right(description))
     } catch {
       case e: NoSuchElementException => List(Left(s"connection parameter missing; ${e.getMessage}; $params"))
     }
@@ -1424,6 +1546,7 @@ object DnaParser {
 
   /**
     * Constructs a group description from the parser parameters.
+    *
     * @param params The parameters describing the group
     * @return Either a pair holding the group ID and the associated description, or a failure message
     */
@@ -1432,18 +1555,18 @@ object DnaParser {
       val groupId = params(GROUP_ID.name).asInstanceOf[String]
       val remoteParams = (params.get(HOST.name), params.get(PORT.name))
       remoteParams match {
-          // both host and port are provided -> remote group
+        // both host and port are provided -> remote group
         case (Some(host), Some(port)) =>
           Right((
             groupId,
             new GroupDescription(groupId = groupId, params = RemoteGroupParams(host.asInstanceOf[String], port.asInstanceOf[Int]))
           ))
 
-          // neither host nor port are provided -> local group
+        // neither host nor port are provided -> local group
         case (None, None) =>
           Right((groupId, new GroupDescription(groupId = groupId, params = LocalGroupParams())))
 
-          // one of (host, port) is provided, but not the other -> invalid group
+        // one of (host, port) is provided, but not the other -> invalid group
         case _ =>
           Left(s"Invalid group specification. Must supply both (host, port) for remote group, or none for a local group; params: $params")
       }
@@ -1455,8 +1578,9 @@ object DnaParser {
   /**
     * Converts the parameter to a [[Set]] of [[String]]. If the parameter is a set of strings, then returns that.
     * Otherwise converts the `name` to a [[String]] and adds it to the specified [[Set]]
+    *
     * @param name The name of set or a set
-    * @param set The set to which to add the name
+    * @param set  The set to which to add the name
     * @return a [[Set]] of [[String]]
     */
   private def asSet(name: Any, set: Set[String]): Set[String] =
