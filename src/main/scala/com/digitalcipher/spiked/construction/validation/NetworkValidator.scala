@@ -61,6 +61,11 @@ object NetworkValidator {
     if(missing.isEmpty) Right(description) else Left(missing)
   }
 
+  /**
+    * Validates that the neurons only refer to existing groups
+    * @param description The network description
+    * @return A sequence of missing references, or the network description
+    */
   def validateGroupReferences(description: NetworkDescription): Either[Seq[String], NetworkDescription] = {
     val groupIds = description.groups.keySet
 
