@@ -57,17 +57,42 @@ class NetworkValidatorTest extends BaseSpec {
 
     "validation of all references should return network description for valid network references" in {
       val validation = validateReferences(network_valid())
-      true should be(true)
+
+      validation.isRight should be(true)
     }
 
     "validation of all references should return only the failing references for non-existing group" in {
       val validation = validateReferences(network_neuronReferencesNonExistentGroup())
-      true should be(true)
+
+      validation.isLeft should be(true)
+      validation.left.get.size should be(3)
+
+      // and the errors should be the same as those listed
+      validation.left.get.toSet should be(Set(
+        "Group 'group1a' not found in groups; (nid=in-1, grp=group1a, nty=mi, mst=1.0 mV, ...)",
+        "Group 'group10' not found in groups; (nid=inh-1, grp=group10, nty=mi, mst=0.4 mV, ...)",
+        "Group 'no_group' not found in groups; (nid=out-2, grp=no_group, nty=mi, mst=1.0 mV, ...)"
+      ))
     }
 
     "validation of all references should return only the failing references for non-existing connections and learning functions" in {
       val validation = validateReferences(network_referencesNonExistentNeuronsLearningFunctionsAndGroups())
-      true should be(true)
+
+      validation.isLeft should be(true)
+      validation.left.get.size should be(8)
+
+
+      // and the errors should be the same as those listed
+      validation.left.get.toSet should be(Set(
+        "Group 'group1a' not found in groups; (nid=in-1, grp=group1a, nty=mi, mst=1.0 mV, ...)",
+        "Group 'group10' not found in groups; (nid=inh-1, grp=group10, nty=mi, mst=0.4 mV, ...)",
+        "Group 'no_group' not found in groups; (nid=out-2, grp=no_group, nty=mi, mst=1.0 mV, ...)",
+        "Learning function 'stdp_aplha' not found in learning functions; (prn=in-1, psn=out-1, cnw=0.5, eqw=0.5, lrn=stdp_aplha)",
+        "Learning function 'stdp_aplha' not found in learning functions; (prn=in-1, psn=out-2, cnw=0.5, eqw=0.5, lrn=stdp_aplha)",
+        "Learning function 'stdp_aplha' not found in learning functions; (prn=in-2, psn=out-1, cnw=0.5, eqw=0.5, lrn=stdp_aplha)",
+        "Learning function 'stdp_aplha' not found in learning functions; (prn=in-2, psn=out-2, cnw=0.5, eqw=0.5, lrn=stdp_aplha)",
+        "Learning function 'flatly' not found in learning functions; (prn=out-1, psn=inh-1, cnw=1.0, eqw=1.0, lrn=flatly)"
+      ))
     }
   }
 

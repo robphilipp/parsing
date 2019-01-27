@@ -12,6 +12,7 @@ import com.digitalcipher.spiked.construction.description.WeightDecayDescription.
 import com.digitalcipher.spiked.construction.description.WeightLimitDescription.{apply => _, _}
 import com.digitalcipher.spiked.construction.description._
 import com.digitalcipher.spiked.construction.parsing.DnaParser._
+import com.digitalcipher.spiked.construction.validation.NetworkValidator
 import squants.electro._
 import squants.motion.{MetersPerSecond, Velocity}
 import squants.space.{Angle, Length, Microns, Radians}
@@ -180,7 +181,7 @@ class DnaParser(validateReferences: Boolean) extends RegexParsers {
         )
 
         if(validateReferences) {
-          validateReferences(networkDescription)
+          NetworkValidator.validateReferences(networkDescription)
         } else {
           Right(networkDescription)
         }

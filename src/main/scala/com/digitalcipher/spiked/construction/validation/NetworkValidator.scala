@@ -13,10 +13,20 @@ object NetworkValidator {
     * Runs through all the validations, collecting the errors, and returning the errors if there are
     * any. If there are no errors, then returns the network description
     * @param description The network description
-    * @return Either the error messages if any reference violations occured, or the network desctiption
+    * @return Either the error messages if any reference violations occurred, or the network description
     */
-  def validateReferences(description: NetworkDescription): Either[Seq[String], NetworkDescription] =
-      validateConnectionReferences(description).map(description => validateGroupReferences(description)).joinRight
+  def validateReferences(description: NetworkDescription): Either[Seq[String], NetworkDescription] = {
+    // collect all the missing references
+    val missingRefs = validateConnectionReferences(description).left.getOrElse(Seq()) ++
+      validateGroupReferences(description).left.getOrElse(Seq())
+
+    // if there are missing references, then return them, otherwise return the original network description
+    if(missingRefs.nonEmpty) {
+      Left(missingRefs)
+    } else {
+      Right(description)
+    }
+  }
 
   /**
     * Validates that all the neurons and learning functions referenced in the connections
