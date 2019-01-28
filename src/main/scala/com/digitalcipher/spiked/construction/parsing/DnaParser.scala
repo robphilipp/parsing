@@ -144,7 +144,7 @@ class DnaParser(validateReferences: Boolean) extends RegexParsers {
     * Parse the DNA sequence into a network description
     *
     * @param dna The DNA sequence to be parsed
-    * @return A [[NetworkDescription]] from the parsed DNA sequence
+    * @return A network description from the parsed DNA sequence
     */
   def parseDna(dna: String): Either[Seq[String], NetworkDescription] = {
     parseAll(description, cleanDna(dna)) match {
@@ -249,7 +249,7 @@ class DnaParser(validateReferences: Boolean) extends RegexParsers {
     * The description is a effectively a map of keys to values
     * {{{description ::= "(" keyValue \{ "," keyValue \} ")".}}}
     *
-    * @return a [[Map]] of the keys to their associated values
+    * @return a map of the keys to their associated values
     */
   def description: Parser[Map[String, Any]] = "(" ~> repsep(keyValue, ",") <~ ")" ^^ (Map() ++ _)
 
@@ -257,7 +257,7 @@ class DnaParser(validateReferences: Boolean) extends RegexParsers {
     * A list of descriptions that returns a list of map(string->value)
     * {{{list ::= "[" values "]".}}}
     *
-    * @return a [[List]] of [[Map]] that represent parameters
+    * @return a list of map that represent parameters
     */
   def list: Parser[List[Any]] = "[" ~> values <~ "]" ^^ (_.toList)
 
@@ -265,7 +265,7 @@ class DnaParser(validateReferences: Boolean) extends RegexParsers {
     * A comma-separated list of values
     * {{{values ::= value \{ "," value \}.}}}
     *
-    * @return a [[Seq]] of [[Any]]
+    * @return a sequence of any class
     */
   def values: Parser[Seq[Any]] = repsep(value, ",") ^^ (List() ++ _)
 
@@ -273,7 +273,7 @@ class DnaParser(validateReferences: Boolean) extends RegexParsers {
     * A set of values
     * {{{set ::= "{" values "}".}}}
     *
-    * @return a [[Set]] of [[Any]]
+    * @return a set of any class
     */
   def set: Parser[Set[Any]] = "{" ~> values <~ "}" ^^ (_.toSet)
 
@@ -292,7 +292,7 @@ class DnaParser(validateReferences: Boolean) extends RegexParsers {
 
   /**
     * The individual (key, value) pairs. Note that although a key is always a string, a value can
-    * also be a [[Map]]
+    * also be a map
     * {{{keyValue ::= key "=" value.}}}
     *
     * @return A (key, value) tuple
@@ -745,10 +745,10 @@ class DnaParser(validateReferences: Boolean) extends RegexParsers {
   /**
     * A neuron connection list. Note that because the pre- and post-synaptic neuron IDs can have ranges in them, a single
     * line that matches here could translate into a list of more than one connections. And becuase of that, this returns
-    * a list of [[ConnectionDescription]] instances.
+    * a list of connection description instances.
     * {{{connection ::= "(" connectionParameter \{ "," connectionParameter \} ")".}}}
     *
-    * @return A [[Parser]] holding a list of [[ConnectionDescription]] instances
+    * @return A [[Parser]] holding a list of connection description instances
     */
   def connection: Parser[List[Either[String, ConnectionDescription]]] = "(" ~> repsep(connectionParameter, ",") <~ ")" ^^
     (params => asConnection(params.toMap))
@@ -758,7 +758,7 @@ class DnaParser(validateReferences: Boolean) extends RegexParsers {
     * match that [[connection]]. This is the final connection list.
     * {{{connections ::= "[" connection \{ "," connection \} "]".}}}
     *
-    * @return A [[Parser]] holding the list of [[ConnectionDescription]] instance collected from the [[connection]] method
+    * @return A [[Parser]] holding the list of connection description instance collected from the [[connection]] method
     */
   def connections: Parser[List[Either[String, ConnectionDescription]]] = "[" ~> repsep(connection, ",") <~ "]" ^^
     (lists => lists.flatten)
@@ -1003,7 +1003,7 @@ class DnaParser(validateReferences: Boolean) extends RegexParsers {
     * The neuron's weight decay function
     * {{{neuronWeightDecay ::= "WDF" = weightDecay.}}}
     *
-    * @return A [[Parser]] holding the neuron's [[WeightDecayDescription]]
+    * @return A [[Parser]] holding the neuron's weight-decay description
     */
   def neuronWeightDecay: Parser[(String, WeightDecayDescription)] = WEIGHT_DECAY_FUNCTION.name ~ "=" ~ weightDecay ^^ {
     case key ~ "=" ~ weightDecay => (key, weightDecay)
@@ -1013,7 +1013,7 @@ class DnaParser(validateReferences: Boolean) extends RegexParsers {
     * The neuron's synapse-timing function
     * {{{synapseTiming ::= "SNT" = synapseTiming}}}
     *
-    * @return A [[Parser]] holding the neuron's [[SignalReleaseProbabilityDescription]]
+    * @return A [[Parser]] holding the neuron's signal-release probability description
     */
   def synapseTimingFunction: Parser[(String, SignalReleaseProbabilityDescription)] = SIGNAL_RELEASE_PROBABILITY.name ~ "=" ~ synapseTiming ^^ {
     case key ~ "=" ~ synapseTiming => (key, synapseTiming)
@@ -1023,7 +1023,7 @@ class DnaParser(validateReferences: Boolean) extends RegexParsers {
     * The neuron's weight decay function
     * {{{neuronWeightDecay ::= "WLF" = neuronWeightLimiter.}}}
     *
-    * @return A [[Parser]] holding the neuron's [[WeightLimitDescription]]
+    * @return A [[Parser]] holding the neuron's weight-limit description
     */
   def neuronWeightLimiter: Parser[(String, WeightLimitDescription)] = WEIGHT_LIMITER_FUNCTION.name ~ "=" ~ weightLimit ^^ {
     case key ~ "=" ~ weightLimit => (key, weightLimit)
@@ -1033,7 +1033,7 @@ class DnaParser(validateReferences: Boolean) extends RegexParsers {
     * The neuron's locaton description
     * {{{neuronLocation ::= "LOC" = location.}}}
     *
-    * @return A [[Parser]] holding the neuron's [[LocationDescription]]
+    * @return A [[Parser]] holding the neuron's location description
     */
   def neuronLocation: Parser[(String, LocationDescription)] = LOCATION.name ~ "=" ~ location ^^ {
     case key ~ "=" ~ location => (key, location)
@@ -1129,7 +1129,7 @@ class DnaParser(validateReferences: Boolean) extends RegexParsers {
     * The a monostable integrator neuron description
     * {{{neuron ::= "(" monostableIntegratorParam \{ "," monostableIntegratorParam \}. ")" }}}
     *
-    * @return A [[Parser]] holding the [[NeuronDescription]] or a string with the failure message
+    * @return A [[Parser]] holding the neuron description or a string with the failure message
     */
   def monostableIntegrator: Parser[Either[String, (String, NeuronDescription)]] = "(" ~> repsep(monostableIntegratorParam, ",") <~ ")" ^^
     (params => asNeuron(params.toMap))
@@ -1138,7 +1138,7 @@ class DnaParser(validateReferences: Boolean) extends RegexParsers {
     * The a bistable integrator neuron description
     * {{{neuron ::= "(" bistableIntegratorParam \{ "," bistableIntegratorParam \}. ")" }}}
     *
-    * @return A [[Parser]] holding the [[NeuronDescription]] or a string with the failure message
+    * @return A [[Parser]] holding the neuron description or a string with the failure message
     */
   def bistableIntegrator: Parser[Either[String, (String, NeuronDescription)]] = "(" ~> repsep(bistableIntegratorParam, ",") <~ ")" ^^
     (params => asNeuron(params.toMap))
@@ -1199,7 +1199,7 @@ class DnaParser(validateReferences: Boolean) extends RegexParsers {
     * (i.e. projection 1, 2, and 3)
     * {{{location ::= ( coordinateType, coordinate, coordinate, coordinate ).}}}
     *
-    * @return A [[Parser]] holding a [[LocationDescription]] object representing the coordinate type
+    * @return A [[Parser]] holding a location description object representing the coordinate type
     */
   def location: Parser[LocationDescription] = "(" ~> coordinateType ~ "," ~ coordinate ~ "," ~ coordinate ~ "," ~ coordinate <~ ")" ^^ {
     //noinspection ScalaUnnecessaryParentheses
@@ -1253,7 +1253,7 @@ class DnaParser(validateReferences: Boolean) extends RegexParsers {
     * The value can be a description, or an integer or floating-point number, and a string
     * {{{value ::= location | description | list | range | set | idSet | double | integer | id}}}
     *
-    * @return A [[String]] or description
+    * @return A string or description
     */
   def value: Parser[Any] =
     monostableIntegrator | bistableIntegrator |
@@ -1285,7 +1285,7 @@ class DnaParser(validateReferences: Boolean) extends RegexParsers {
     * Dimensions must be 1 to 4 characters long, and can be unicode characters
     * {{{dimension ::= regex([a-zA-Z\p{L}\p{M}]{1,4})}}}
     *
-    * @return A [[String]]
+    * @return A string
     */
   def dimension: Parser[String] =
     """[a-zA-Z\p{L}\p{M}/]{1,4}""".r
@@ -1294,7 +1294,7 @@ class DnaParser(validateReferences: Boolean) extends RegexParsers {
     * A floating point value with an attached dimension
     * {{{dimensionedDouble ::= double dimension}}}
     *
-    * @return A [[String]] representing the double with the attached dimension
+    * @return A string representing the double with the attached dimension
     */
   def dimensionedDouble: Parser[String] = double ~ dimension ^^ (tuple => s"${tuple._1.toDouble} ${tuple._2.toString}")
 
@@ -1310,7 +1310,7 @@ class DnaParser(validateReferences: Boolean) extends RegexParsers {
     * A value with an attached dimension
     * {{{dimensionedValue ::= dimensionedDouble | dimensionedInt}}}
     *
-    * @return A [[String]] representing the dimensioned value
+    * @return A string representing the dimensioned value
     */
   def dimensionedNumber: Parser[String] = dimensionedDouble | dimensionedInt
 
@@ -1329,10 +1329,10 @@ class DnaParser(validateReferences: Boolean) extends RegexParsers {
   }
 
   /**
-    * A range of integers expressed as `start:end:interval` that is expanded into a [[Set]] of integers
+    * A range of integers expressed as `start:end:interval` that is expanded into a set of integers
     * {{{range ::= integer ":" integer ":" integer.}}}
     *
-    * @return A [[Set]] of [[Int]] expanded form the range
+    * @return A set of integer expanded form the range
     */
   def range: Parser[Set[Int]] = integer ~ ":" ~ integer ~ ":" ~ integer ^^ {
     case start ~ ":" ~ end ~ ":" ~ interval => (start to end by interval).toSet
@@ -1388,7 +1388,7 @@ class DnaParser(validateReferences: Boolean) extends RegexParsers {
     * An ID. Similar to a key but can contain `-` following anywhere after the first character
     * {{{id ::= regex([a-zA-Z0-9]+[\-]*[a-zA-Z0-9]).}}}
     *
-    * @return A [[String]] representing the ID
+    * @return A string representing the ID
     */
   def id: Parser[String] =
     """[a-zA-Z0-9]+[\-_]*[a-zA-Z0-9]*""".r
@@ -1412,13 +1412,13 @@ object DnaParser {
   def apply(validateReference: Boolean = false): DnaParser = new DnaParser(validateReference)
 
   /**
-    * Construct a [[LocationDescription]] based on the specified coordinate system type and the tuple of projections
+    * Construct a location description based on the specified coordinate system type and the tuple of projections
     *
     * @param coordinateType The coordinate system type (i.e. cartesian, cylindrical, spherical)
     * @param px1            The first projection (in cartesian this would be `x`, in cylindrical this would be `r`)
     * @param px2            The second projection (in cartesian this would be `y`, in cylindrical this would be `φ`)
     * @param px3            The third projection (in cartesian this would be `z`, in cylindrical this would be `z`)
-    * @return The [[LocationDescription]] describing the location
+    * @return The location description describing the location
     */
   private def asLocation(coordinateType: String, px1: (Int, String), px2: (Int, String), px3: (Int, String)) = {
     val px = Map(px1._1 -> px1._2, px2._1 -> px2._2, px3._1 -> px3._2)
@@ -1445,10 +1445,10 @@ object DnaParser {
   }
 
   /**
-    * Constructs the [[WeightDecayDescription]] from the map generated by the parser
+    * Constructs the weight-decay description from the map generated by the parser
     *
-    * @param weightDecay The [[Map]] holding the key-value pairs describing the weight-decay function
-    * @return the [[WeightDecayDescription]] from the map generated by the parser
+    * @param weightDecay The map holding the key-value pairs describing the weight-decay function
+    * @return the weight-decay description from the map generated by the parser
     */
   private def asWeightDecay(weightDecay: Map[String, Any]): WeightDecayDescription = {
 
@@ -1462,10 +1462,10 @@ object DnaParser {
   }
 
   /**
-    * Constructs the [[WeightLimitDescription]] from the map generated by the parser
+    * Constructs the weight-limit description from the map generated by the parser
     *
-    * @param weightLimiter The [[Map]] holding the key-value pairs describing the weight-limiter function
-    * @return the [[WeightLimitDescription]] from the map generated by the parser
+    * @param weightLimiter The map holding the key-value pairs describing the weight-limiter function
+    * @return the weight-limit description from the map generated by the parser
     */
   private def asWeightLimiter(weightLimiter: Map[String, Any]): WeightLimitDescription = {
 
@@ -1480,10 +1480,10 @@ object DnaParser {
   }
 
   /**
-    * Constructs the [[SignalReleaseProbabilityDescription]] from the map generated by the parser
+    * Constructs the signal-release probability description from the map generated by the parser
     *
-    * @param synapseTiming The [[Map]] holding the key-value pairs describing the synapse timing function
-    * @return the [[SignalReleaseProbabilityDescription]]
+    * @param synapseTiming The map holding the key-value pairs describing the synapse timing function
+    * @return the signal-release probability description
     */
   private def asSynapseTiming(synapseTiming: Map[String, Any]): SignalReleaseProbabilityDescription = {
     val facilitation = SignalTimingFunction(
@@ -1500,10 +1500,10 @@ object DnaParser {
   }
 
   /**
-    * Constructs the [[LearningFunctionDescription]] from the map generated by the parser
+    * Constructs the learning-function description from the map generated by the parser
     *
-    * @param stdp The [[Map]] holding the key-value pairs describing the spike-time-dependent plasticity function
-    * @return the [[LearningFunctionDescription]] from the map generated by the parser
+    * @param stdp The map holding the key-value pairs describing the spike-time-dependent plasticity function
+    * @return the learning-function description from the map generated by the parser
     */
   private def asLearningFunction(learningType: Symbol, stdp: Map[String, Any]): Either[String, (String, LearningFunctionDescription)] = {
     try {
@@ -1543,10 +1543,10 @@ object DnaParser {
   }
 
   /**
-    * Constructs the [[NeuronDescription]] from the map generated by the parser
+    * Constructs the neuron description from the map generated by the parser
     *
-    * @param params The [[Map]] holding the key-value pairs describing the neuron
-    * @return the [[NeuronDescription]] from the map generated by the parser
+    * @param params The map holding the key-value pairs describing the neuron
+    * @return the neuron description from the map generated by the parser
     */
   private def asNeuron(params: Map[String, Any]): Either[String, (String, NeuronDescription)] = {
     try {
@@ -1604,7 +1604,7 @@ object DnaParser {
     * Constructs a list of the connections for the network
     *
     * @param params The parameters describing the connections in the network
-    * @return A [[List]] of [[ConnectionDescription]] instances
+    * @return A list of connection description instances
     */
   private def asConnection(params: Map[String, Any]): List[Either[String, ConnectionDescription]] = {
     try {
@@ -1655,12 +1655,12 @@ object DnaParser {
   }
 
   /**
-    * Converts the parameter to a [[Set]] of [[String]]. If the parameter is a set of strings, then returns that.
-    * Otherwise converts the `name` to a [[String]] and adds it to the specified [[Set]]
+    * Converts the parameter to a set of string. If the parameter is a set of strings, then returns that.
+    * Otherwise converts the `name` to a string and adds it to the specified set
     *
     * @param name The name of set or a set
     * @param set  The set to which to add the name
-    * @return a [[Set]] of [[String]]
+    * @return a set of string
     */
   private def asSet(name: Any, set: Set[String]): Set[String] =
     name match {
